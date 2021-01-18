@@ -23,7 +23,10 @@ int main(int argc, char* argv[])
                 Point topLeft(bbox.at<float>(0), bbox.at<float>(1));
                 Point bottomRight(bbox.at<float>(4), bbox.at<float>(5));
                 Point middle = (topLeft + bottomRight)/2;
-                cout<<middle<<endl;
+                float width = img.size().width;
+                float height = img.size().width;
+                cout<<middle.x/width<<endl;
+                cout<<middle.y/height<<endl;
             };
         }else{
             cout<<"Not detected"<<endl;
