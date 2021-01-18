@@ -20,7 +20,6 @@
 #include <opencv2/highgui.hpp>
 
 #include "CameraHandler.h"
-#include "BMP.h"
 
 
 using namespace std;
