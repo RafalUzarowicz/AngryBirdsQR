@@ -5,6 +5,12 @@
 #include <opencv2/calib3d.hpp>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include "IGame.h"
+#include "IVideo.h"
+#include "QueueGame.h"
+#include "QueueVideo.h"
+#include "SharedGame.h"
+#include "SharedVideo.h"
 
 using namespace cv;
 using namespace std;
@@ -15,7 +21,6 @@ int main(int argc, char* argv[])
     if(argc>1){
         img = imread(argv[1]);
         QRCodeDetector qrDecoder;
-
         Mat bbox;
 
         if(qrDecoder.detect(img, bbox)){
@@ -30,7 +35,7 @@ int main(int argc, char* argv[])
                 int lower_bound = (max_y - min_y)/2;
                 int upper_bound = img.size().height- (max_y -min_y)/2;
                 int middle = (max_y + min_y)/2;
-                float percent = (middle-lower_bound)/(float)(upper_bound-lower_bound);
+                double percent = (middle-lower_bound)/(double)(upper_bound-lower_bound);
                 cout<<percent*100<<"%"<<endl;
             };
         }else{
@@ -38,5 +43,9 @@ int main(int argc, char* argv[])
         };
     }
     return 0;
-
 }
+//todo
+//1. 4 pliki header 2 kanały po 2 metody
+//      -  Te same metody
+//      -  Klasa-interfejs zapisz, odbierz
+
