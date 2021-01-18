@@ -6,6 +6,8 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <chrono>
+#include <thread>
 
 // System libraries
 #include <fcntl.h>
@@ -147,17 +149,42 @@ void CameraHandler::captureFrame() {
     // One is to iterate as long as we capture frames
     // Second iterates over buffers
 
-    // Putting the buffer into incoming queue
-    if (ioctl(fd, VIDIOC_QBUF, &bufferinfo) < 0) {
-        perror("VIDIOC_QBUF");
-        exit(1);
-    }
+    int i = 0;
+    while (true) {
 
-    // the buffer waits in the outgoing queue
+        i++;
+        // Putting the buffer into incoming queue
+        if (ioctl(fd, VIDIOC_QBUF, &bufferinfo) < 0) {
+            perror("VIDIOC_QBUF");
+            exit(1);
+        }
 
-    if (ioctl(fd, VIDIOC_DQBUF, &bufferinfo) < 0) {
-        perror("VIDIOC_DQBUF");
-        exit(1);
+        // the buffer waits in the outgoing queue
+
+        if (ioctl(fd, VIDIOC_DQBUF, &bufferinfo) < 0) {
+            perror("VIDIOC_DQBUF");
+            exit(1);
+        }
+
+        // saving it as jpgfile
+
+        int jpgfile;
+
+        std::ostringstream ss;
+        ss << this->filename << i << ".jpeg";
+
+        std::string filename = ss.str();
+
+        if ((jpgfile = open(filename.c_str(), O_WRONLY | O_CREAT, 0660)) < 0) {
+            perror("open");
+            exit(1);
+        }
+
+        write(jpgfile, this->buffer, bufferinfo.length);
+        close(jpgfile);
+
+        
+        std::this_thread::sleep_for(std::chrono::milliseconds(this->frameDelay));
     }
 
     // loop ends here
@@ -167,17 +194,6 @@ void CameraHandler::captureFrame() {
         exit(1);
     }
 
-    // saving it as jpgfile
-
-    int jpgfile;
-    if ((jpgfile = open(this->filename, O_WRONLY | O_CREAT, 0660)) < 0) {
-        perror("open");
-        exit(1);
-    }
-
-    write(jpgfile, this->buffer, bufferinfo.length);
-    close(jpgfile);
-    
 }
 
 // TODO: test after installing OpenCV
@@ -224,6 +240,10 @@ int CameraHandler::getHeight() {
     return this->imageHeight;
 }
 
-void CameraHandler::setFilename(const char * filename) {
+void CameraHandler::setFilename(std::string filename) {
     this->filename = filename;
+}
+
+void CameraHandler::setFrameDelay(int delay) {
+    this->frameDelay = delay;
 }

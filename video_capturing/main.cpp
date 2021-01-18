@@ -6,7 +6,7 @@
 
 int main(int argc, char ** argv) {
 
-    const char * OUTPUT_FILENAME = "/home/anton/Desktop/myimage.jpeg";
+    std::string OUTPUT_FILENAME = std::string("/home/anton/Desktop/files/capture");
 
 
     std::cout << "1. Opening Capture device" << std::endl;
@@ -17,6 +17,7 @@ int main(int argc, char ** argv) {
     handler->setWidth(640);
     handler->setHeight(480);
     handler->setFilename(OUTPUT_FILENAME);
+    handler->setFrameDelay(2000);
 
     std::cout << "3. specifying the format of the image" << std::endl;
 

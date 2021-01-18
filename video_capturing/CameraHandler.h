@@ -25,7 +25,8 @@ class CameraHandler {
 
         void setWidth(int width);
         void setHeight(int height);
-        void setFilename(const char * filename);
+        void setFilename(std::string filename);
+        void setFrameDelay(int delay);
 
         int getWidth();
         int getHeight();
@@ -37,7 +38,9 @@ class CameraHandler {
         int fd;
         int imageWidth;
         int imageHeight;
-        const char * filename;
+
+        int frameDelay;
+        std::string filename;
 
         struct v4l2_buffer infoBuffer{};
         unsigned char * buffer {nullptr};
