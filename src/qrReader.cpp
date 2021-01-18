@@ -20,13 +20,18 @@ int main(int argc, char* argv[])
 
         if(qrDecoder.detect(img, bbox)){
             if(bbox.cols ==4){
-                Point topLeft(bbox.at<float>(0), bbox.at<float>(1));
-                Point bottomRight(bbox.at<float>(4), bbox.at<float>(5));
-                Point middle = (topLeft + bottomRight)/2;
-                float width = img.size().width;
-                float height = img.size().width;
-                cout<<middle.x/width<<endl;
-                cout<<middle.y/height<<endl;
+                Point points[4];
+                int max_y=0, min_y=img.size().height;
+                for(int i=0; i<4;i++){
+                    points[i] = Point(bbox.at<float>(2*i), bbox.at<float>(2*i +1));
+                    max_y = points[i].y>max_y?points[i].y:max_y;
+                    min_y = points[i].y<min_y?points[i].y:min_y;
+                }
+                int lower_bound = (max_y - min_y)/2;
+                int upper_bound = img.size().height- (max_y -min_y)/2;
+                int middle = (max_y + min_y)/2;
+                float percent = (middle-lower_bound)/(float)(upper_bound-lower_bound);
+                cout<<percent*100<<"%"<<endl;
             };
         }else{
             cout<<"Not detected"<<endl;
