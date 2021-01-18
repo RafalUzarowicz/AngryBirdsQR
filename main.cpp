@@ -1,17 +1,9 @@
-#include <iostream>
-
-#ifdef COLORS
-#include <ncurses.h>
-#else
-
-#include "./game/ncursim.h"
-
-#endif
+#include "game/Core.h"
 
 int main() {
-    initscr();
-    printw("Hellow world!!");
-    getch();
-    endwin();
+    Core core;
+
+    core.run();
+
     return 0;
 }
