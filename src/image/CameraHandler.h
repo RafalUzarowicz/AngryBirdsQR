@@ -1,4 +1,5 @@
 #include <linux/videodev2.h>
+#include <vector>
 
 class CameraHandler {
 
@@ -44,5 +45,11 @@ class CameraHandler {
 
         struct v4l2_buffer infoBuffer{};
         unsigned char * buffer {nullptr};
+public:
+    unsigned char *getBuffer() const;
+
+private:
+
+    std::vector<unsigned char> externalBuffer;
         
 };

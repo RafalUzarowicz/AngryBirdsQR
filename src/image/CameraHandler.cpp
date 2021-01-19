@@ -61,6 +61,12 @@ void CameraHandler::askDevice() {
     }
 }
 
+void CameraHandler::configure() {
+    specifyFormat();
+    requestDeviceBuffer();
+    queryDeviceBuffer();
+}
+
 void CameraHandler::specifyFormat() {
 
     // step 3
@@ -68,7 +74,7 @@ void CameraHandler::specifyFormat() {
     format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     format.fmt.pix.width = this->imageHeight;
     format.fmt.pix.height = this->imageWidth;
-    format.fmt.pix.pixelformat = V4L2_PIX_FMT_MJPEG;
+    format.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24;
 
     if (ioctl(this->fd, VIDIOC_S_FMT, &format) < 0) {
         perror("Inapropriate format for device, VIDIOC_S_FMT");
@@ -117,7 +123,6 @@ void CameraHandler::queryDeviceBuffer() {
 
     memset(this->buffer, 0, queryBuff.length);
 
-    // TODO: replace it with queryBuff object
     memset(&this->infoBuffer, 0, sizeof(infoBuffer));
     infoBuffer.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     infoBuffer.memory = V4L2_MEMORY_MMAP;
@@ -145,47 +150,37 @@ void CameraHandler::captureFrame() {
         exit(1);
     }
 
-    // Usually here 2 loops
-    // One is to iterate as long as we capture frames
-    // Second iterates over buffers
-
-    int i = 0;
-    while (true) {
-
-        i++;
-        // Putting the buffer into incoming queue
-        if (ioctl(fd, VIDIOC_QBUF, &bufferinfo) < 0) {
-            perror("VIDIOC_QBUF");
-            exit(1);
-        }
-
-        // the buffer waits in the outgoing queue
-
-        if (ioctl(fd, VIDIOC_DQBUF, &bufferinfo) < 0) {
-            perror("VIDIOC_DQBUF");
-            exit(1);
-        }
-
-        // saving it as jpgfile
-
-        int jpgfile;
-
-        std::ostringstream ss;
-        ss << this->filename << i << ".jpeg";
-
-        std::string filename = ss.str();
-
-        if ((jpgfile = open(filename.c_str(), O_WRONLY | O_CREAT, 0660)) < 0) {
-            perror("open");
-            exit(1);
-        }
-
-        write(jpgfile, this->buffer, bufferinfo.length);
-        close(jpgfile);
-
-        
-        std::this_thread::sleep_for(std::chrono::milliseconds(this->frameDelay));
+    // Putting the buffer into incoming queue
+    if (ioctl(fd, VIDIOC_QBUF, &bufferinfo) < 0) {
+        perror("VIDIOC_QBUF");
+        exit(1);
     }
+
+    // the buffer waits in the outgoing queue
+
+    if (ioctl(fd, VIDIOC_DQBUF, &bufferinfo) < 0) {
+        perror("VIDIOC_DQBUF");
+        exit(1);
+    }
+
+    // saving it as jpgfile
+
+    int jpgfile;
+    int i = 0;
+    std::ostringstream ss;
+    ss << this->filename << i << ".jpeg";
+
+    std::string filename = ss.str();
+
+    if ((jpgfile = open(filename.c_str(), O_WRONLY | O_CREAT, 0660)) < 0) {
+        perror("open");
+        exit(1);
+    }
+
+    write(jpgfile, this->buffer, bufferinfo.length);
+    close(jpgfile);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(this->frameDelay));
 
     // loop ends here
 
@@ -246,4 +241,8 @@ void CameraHandler::setFilename(std::string filename) {
 
 void CameraHandler::setFrameDelay(int delay) {
     this->frameDelay = delay;
+}
+
+unsigned char *CameraHandler::getBuffer() const {
+    return buffer;
 }

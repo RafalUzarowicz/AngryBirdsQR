@@ -1,0 +1,4 @@
+/home/anton/Desktop/QRGame/CMakeFiles/rebuild_cache.dir
+/home/anton/Desktop/QRGame/CMakeFiles/edit_cache.dir
+/home/anton/Desktop/QRGame/CMakeFiles/QRGameTest.dir
+/home/anton/Desktop/QRGame/CMakeFiles/QRGame.dir

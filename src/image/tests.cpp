@@ -1,8 +1,6 @@
 #include <iostream>
 #include "CameraHandler.h"
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 
 int main(int argc, char ** argv) {
 
@@ -16,30 +14,23 @@ int main(int argc, char ** argv) {
 
     handler->setWidth(640);
     handler->setHeight(480);
+
     handler->setFilename(OUTPUT_FILENAME);
     handler->setFrameDelay(2000);
 
-    std::cout << "3. specifying the format of the image" << std::endl;
-
-    handler->specifyFormat();
-
-    std::cout << "Width: " << handler->getWidth() << std::endl;
-    std::cout << "Height: " << handler->getHeight() << std::endl;
-
-    std::cout << "4. requesting a buffer from the driver" << std::endl;
-
-    handler->requestDeviceBuffer();
-
-    
-    std::cout << "5. queried the buffer" << std::endl;
-    handler->queryDeviceBuffer();
-
+    handler->configure();
 
     handler->captureFrame();
 
-    std::cout << "6. captured the image" << std::endl;
+    unsigned char * buffer = handler->getBuffer();
 
-    std::cout << "Yay!" << std::endl;
+    for(int i = 0; i < 640 * 480 * 4; i++) {
+        std::cout << (int) buffer[i] << std::endl;
+
+
+    }
+
+
 
     return 0;
 }
