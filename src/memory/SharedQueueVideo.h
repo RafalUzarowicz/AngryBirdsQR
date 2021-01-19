@@ -10,7 +10,7 @@
 class SharedQueueVideo {
 public:
     SharedQueueVideo(bool write, bool non_block, long msgNum=1);
-    ~SharedQueueVideo();
+    ~SharedQueueVideo()=default;
 
     void sendMsg(VideoData* msg) const;
 

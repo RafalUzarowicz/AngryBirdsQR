@@ -4,16 +4,17 @@
 
 #include "SharedMemoryGame.h"
 #include <fcntl.h>
-#include <unistd.h>
 #include <cerrno>
 #include <cstring>
 #include <iostream>
+#include <ftw.h>
 
 SharedMemoryGame::SharedMemoryGame(){
-    sh_memory = shm_open(GAME_MEM_NAME, O_CREAT|O_RDWR, 0660);
-    size = sizeof (GameData);
+    sh_memory = shm_open(GAME_MEM_NAME, O_RDWR, 0660);
 
-    ftruncate(sh_memory, size);
+    struct stat mem_stat{};
+    fstat(sh_memory, &mem_stat);
+    size = mem_stat.st_size;
 
     data = static_cast<GameData *>(mmap(nullptr,sh_memory, size, PROT_WRITE | PROT_READ, MAP_SHARED, 0));
 
@@ -28,10 +29,6 @@ SharedMemoryGame::SharedMemoryGame(){
         exit(-1);
     }
 }
-SharedMemoryGame::~SharedMemoryGame(){
-    shm_unlink(GAME_MEM_NAME);
-}
-
 template<typename Func, typename ... Args>
 void SharedMemoryGame::sendData(Func f, Args&&... args){
     sem_wait(this->consumer);

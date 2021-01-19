@@ -5,12 +5,14 @@
 #include <cerrno>
 #include <cstring>
 #include <iostream>
+#include <ftw.h>
 
 SharedMemoryVideo::SharedMemoryVideo(){
-    sh_memory = shm_open(VIDEO_MEM_NAME, O_CREAT|O_RDWR, 0660);
-    size = sizeof (VideoData);
+    sh_memory = shm_open(VIDEO_MEM_NAME, O_RDWR, 0660);
 
-    ftruncate(sh_memory, size);
+    struct stat mem_stat{};
+    fstat(sh_memory, &mem_stat);
+    size = mem_stat.st_size;
 
     data = static_cast<VideoData *>(mmap(nullptr,sh_memory, size, PROT_WRITE | PROT_READ, MAP_SHARED, 0));
 
@@ -24,9 +26,6 @@ SharedMemoryVideo::SharedMemoryVideo(){
     if(errno != 0){
         exit(-1);
     }
-}
-SharedMemoryVideo::~SharedMemoryVideo(){
-    shm_unlink(GAME_MEM_NAME);
 }
 
 template<typename Func, typename... Args>
