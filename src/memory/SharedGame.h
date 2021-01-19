@@ -1,7 +1,3 @@
-//
-// Created by asia on 18.01.2021.
-//
-
 #ifndef QRGAME_SHAREDGAME_H
 #define QRGAME_SHAREDGAME_H
 #include <sys/mman.h>

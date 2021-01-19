@@ -1,7 +1,3 @@
-//
-// Created by asia on 18.01.2021.
-//
-
 #ifndef QRGAME_QUEUEIMG_H
 #define QRGAME_QUEUEIMG_H
 #include "IVideo.h"
