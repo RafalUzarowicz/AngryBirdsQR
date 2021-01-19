@@ -1,5 +1,5 @@
-#ifndef QRGAME_COMMON_H
-#define QRGAME_COMMON_H
+#ifndef QRGAME_UTIL_H
+#define QRGAME_UTIL_H
 
 #include <chrono>
 
@@ -30,4 +30,4 @@ struct VideoData{
     char image[MAX_HEIGHT * MAX_WIDTH * PIXEL_SIZE];
 };
 
-#endif //QRGAME_COMMON_H
+#endif //QRGAME_UTIL_H

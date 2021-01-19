@@ -6,7 +6,7 @@
 
 #include <mqueue.h>
 #include <fcntl.h>
-#include "../Common.h"
+#include "../Util.h"
 
 class SharedQueueGame {
 public:

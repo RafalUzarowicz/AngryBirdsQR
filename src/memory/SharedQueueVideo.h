@@ -6,7 +6,7 @@
 #define QRGAME_SHAREDQUEUEVIDEO_H
 
 #include <mqueue.h>
-#include "../Common.h"
+#include "../Util.h"
 class SharedQueueVideo {
 public:
     SharedQueueVideo(bool write, bool non_block, long msgNum=1);
