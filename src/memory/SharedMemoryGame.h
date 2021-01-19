@@ -1,6 +1,3 @@
-//
-// Created by asia on 19.01.2021.
-//
 
 #ifndef QRGAME_SHAREDMEMORYGAME_H
 #define QRGAME_SHAREDMEMORYGAME_H
@@ -13,10 +10,6 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 
-struct GameData{
-    double percentage{};
-    std::chrono::system_clock::time_point timestamp{};
-};
 class SharedMemoryGame {
 public:
     SharedMemoryGame();

@@ -1,6 +1,3 @@
-//
-// Created by asia on 19.01.2021.
-//
 
 #include "SharedMemoryVideo.h"
 #include <fcntl.h>
@@ -29,7 +26,7 @@ SharedMemoryVideo::SharedMemoryVideo(){
     }
 }
 SharedMemoryVideo::~SharedMemoryVideo(){
-    shm_unlink(MEM_NAME);
+    shm_unlink(GAME_MEM_NAME);
 }
 
 template<typename Func, typename... Args>

@@ -11,13 +11,6 @@
 #include "../Common.h"
 #include <sys/mman.h>
 #include <fcntl.h>
-struct VideoData{
-    int height{};
-    int width{};
-    std::chrono::system_clock::time_point timestamp{};
-    uint8_t image[MAX_HEIGHT * MAX_WIDTH * PIXEL_SIZE];
-};
-
 
 class SharedMemoryVideo {
 public:

@@ -14,7 +14,9 @@ add_executable(QRGame
         src/IProcess.h src/QRGame.h src/Game.h src/ImageFactory.h src/QRReader.h
         src/image/CameraHandler.cpp src/image/CameraHandler.h
         src/Common.h src/qr/qrReader.cpp src/memory/SharedMemoryVideo.cpp src/memory/SharedMemoryVideo.h
-        src/memory/SharedMemoryGame.cpp src/memory/SharedMemoryGame.h
+        src/memory/SharedMemoryGame.cpp src/memory/SharedMemoryGame.h src/memory/SharedQueueGame.cpp
+        src/memory/SharedQueueGame.h src/memory/SharedQueueVideo.cpp src/memory/SharedMemoryVideo.h
         )
 target_link_libraries(QRGame ${CURSES_LIBRARIES})
 target_link_libraries( QRGame ${OpenCV_LIBS} )
+target_link_libraries(QRGame rt pthread)
