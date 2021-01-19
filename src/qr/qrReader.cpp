@@ -5,12 +5,12 @@
 #include <opencv2/calib3d.hpp>
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include "memory/IGame.h"
-#include "memory/IVideo.h"
-#include "memory/QueueGame.h"
-#include "memory/QueueVideo.h"
-#include "memory/SharedGame.h"
-#include "memory/SharedVideo.h"
+#include "../memory/IGame.h"
+#include "../memory/IVideo.h"
+#include "../memory/QueueGame.h"
+#include "../memory/QueueVideo.h"
+#include "../memory/SharedGame.h"
+#include "../memory/SharedVideo.h"
 
 using namespace cv;
 using namespace std;
@@ -43,8 +43,4 @@ int main(int argc, char* argv[])
     }
     return 0;
 }
-//todo
-//1. 4 pliki header 2 kanały po 2 metody
-//      -  Te same metody
-//      -  Klasa-interfejs zapisz, odbierz
 
