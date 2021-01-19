@@ -1,5 +1,5 @@
-#ifndef QRGAME_GAME_H
-#define QRGAME_GAME_H
+#ifndef QRGAME_LOGIC_H
+#define QRGAME_LOGIC_H
 
 
 #include <random>
@@ -8,19 +8,17 @@
 #include "Player.h"
 #include "Wall.h"
 
-class Game {
+class Logic {
 private:
     const int wallsGap = 20;
+    const double playerSpeed = 10;
     int score = 0;
     Player player = Player(1, 1);
     std::vector<Wall> walls;
     std::random_device rd;
 
-
 public:
-    Game(){
-
-    }
+    Logic()= default;
 
     void initialize(int height, int width){
         walls.clear();
@@ -44,11 +42,6 @@ public:
         } else if( command == InputManager::DOWN && (player.getY() + player.getSprite().sprite.size() < height - 1) ){
             player.setY(player.getY()+1);
         }
-//        else if( command == InputManager::LEFT && player.getX() > 1){
-//            player.setX(player.getX()-1);
-//        } else if( command == InputManager::RIGHT && (player.getX() + player.getSprite().length < width - 1)){
-//            player.setX(player.getX()+1);
-//        }
 
         // Move walls
         for( auto& wall : walls ){
@@ -59,7 +52,7 @@ public:
                 wall.setHeight(dis(gen));
                 wall.setCounted(false);
             }else{
-                wall.setX(wall.getX()-10*deltaTime);
+                wall.setX(wall.getX()-playerSpeed*deltaTime);
                 // Update score
                 if(wall.getX() + wall.getWidth() < player.getX() && !wall.isCounted()){
                     ++score;
@@ -91,4 +84,4 @@ public:
 };
 
 
-#endif //QRGAME_GAME_H
+#endif //QRGAME_LOGIC_H

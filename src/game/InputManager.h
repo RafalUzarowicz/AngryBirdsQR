@@ -8,8 +8,6 @@ public:
     enum Command{
         UP,
         DOWN,
-        LEFT,
-        RIGHT,
         QUIT,
         NONE
     };
@@ -25,10 +23,6 @@ public:
             current = UP;
         } else if( c == 's' || c == 'S'){
             current = DOWN;
-        } else if( c == 'a' || c == 'A'){
-            current = LEFT;
-        } else if( c == 'd' || c == 'D'){
-            current = RIGHT;
         } else {
             current = NONE;
         }

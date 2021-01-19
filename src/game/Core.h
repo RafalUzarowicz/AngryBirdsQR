@@ -5,21 +5,22 @@
 #include <ctime>
 #include <chrono>
 #include "Window.h"
-#include "Game.h"
+#include "Logic.h"
 #include "InputManager.h"
+#include "../IProcess.h"
 
-class Core {
+class Core: public IProcess {
 private:
     Window* window;
-    Game* game;
+    Logic* game;
     InputManager* inputManager;
     InputManager::Command command;
 
     const double FPS = 60.0;
     const double frameTime = 1000.0/FPS;
 public:
-    Core(InputManager* inputManager = nullptr){
-        this->game = new Game();
+    explicit Core(InputManager* inputManager) :{
+        this->game = new Logic();
         this->window = new Window(game);
         this->inputManager = inputManager == nullptr ? new InputManager() : inputManager;
         this->command = InputManager::NONE;
@@ -31,13 +32,13 @@ public:
         delete inputManager;
     }
 
-    void run(){
+    void run() override{
         window->initialize();
         game->initialize(window->getHeight(), window->getWidth());
 
         double lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-        double deltaTime = 0, nowTime = 0;
-        double dTime = 0, lTime = lastTime;
+        double deltaTime, nowTime;
+        double dTime, lTime = lastTime;
 
         while(command != InputManager::QUIT){
             // Measure time
@@ -55,7 +56,7 @@ public:
 
             if(dTime > frameTime){
                 // Clear screen
-                window->clear();
+                Window::clear();
                 // Draw
                 window->draw();
 

@@ -1,9 +1,10 @@
-#include "game/Core.h"
+#include "src/QRGame.h"
 
-int main() {
-    Core core;
+int main()
+{
+    QRGame qrGame;
 
-    core.run();
+    qrGame.run();
 
     return 0;
 }

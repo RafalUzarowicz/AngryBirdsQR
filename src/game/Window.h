@@ -4,16 +4,16 @@
 #include <ncurses.h>
 #include <iostream>
 #include "Player.h"
-#include "Game.h"
+#include "Logic.h"
 
 class Window {
 private:
     void drawUI(){
-        this->drawScoreMessage(game->getScore());
+        Window::drawScoreMessage(game->getScore());
         this->drawBorder();
     }
 
-    void drawBorder(){
+    void drawBorder() const{
         for(int i = 0; i < width; ++i){
             mvaddch(0,i,VERTICAL_BORDER);
             mvaddch(height - 1, i, VERTICAL_BORDER);
@@ -28,7 +28,7 @@ private:
         mvaddch(height - 1, width - 1, CORNER);
     }
 
-    void drawScoreMessage(int score){
+    static void drawScoreMessage(int score){
         mvprintw(2, 3, "Score: %d", score);
     }
 
@@ -58,17 +58,18 @@ private:
     const static int MIN_HEIGHT = 20;
     const static int MIN_WIDTH = 30;
 
-    int height, width;
+    int height{}, width{};
 
-    Game* game;
+    Logic* game;
 public:
-    Window(Game* game) : game(game){
+    explicit Window(Logic* game) : game(game){
         initscr();
         raw();
         cbreak();
         nodelay(stdscr, TRUE);
         keypad(stdscr, FALSE);
         noecho();
+        resize();
     }
     ~Window(){
         endwin();
@@ -76,7 +77,7 @@ public:
 
     void initialize(){
         this->resize();
-        this->clear();
+        Window::clear();
     }
 
     void resize(){
@@ -99,15 +100,15 @@ public:
         refresh();
     }
 
-    void clear(){
+    static void clear(){
         ::erase();
     }
 
-    int getHeight(){
+    int getHeight() const{
         return height;
     }
 
-    int getWidth(){
+    int getWidth() const{
         return width;
     }
 };
