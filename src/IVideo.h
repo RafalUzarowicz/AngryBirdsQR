@@ -14,8 +14,8 @@ struct VideoData{
 };
 class IVideo{
 public:
-    virtual void sendData(VideoData data)=0;
-    virtual VideoData getData()=0;
+    virtual void sendData(VideoData* data)=0;
+    virtual VideoData* getData()=0;
 };
 
 #endif //QRGAME_IIMG_H

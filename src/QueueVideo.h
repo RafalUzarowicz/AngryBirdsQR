@@ -10,10 +10,10 @@ public:
     QueueVideo(){
 
     }
-    void sendData(VideoData){
+    void sendData(VideoData* data){
 
     }
-    VideoData getData(){
+    VideoData* getData(){
 
     }
 };

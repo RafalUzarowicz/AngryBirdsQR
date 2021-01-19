@@ -36,7 +36,6 @@ int main(int argc, char* argv[])
                 int upper_bound = img.size().height- (max_y -min_y)/2;
                 int middle = (max_y + min_y)/2;
                 double percent = (middle-lower_bound)/(double)(upper_bound-lower_bound);
-                cout<<percent*100<<"%"<<endl;
             };
         }else{
             cout<<"Not detected"<<endl;

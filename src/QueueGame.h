@@ -10,10 +10,10 @@ public:
     QueueGame(){
         //init queue
     }
-    void sendData(GameData data){
+    void sendData(GameData* data){
 
     }
-    GameData getData(){
+    GameData* getData(){
 
     }
 };

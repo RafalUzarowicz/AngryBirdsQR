@@ -10,8 +10,8 @@ struct GameData{
 };
 class IGame{
 public:
-    virtual void sendData(GameData data) = 0;
-    virtual GameData getData ()=0;
+    virtual void sendData(GameData* data) = 0;
+    virtual GameData* getData ()=0;
 };
 
 #endif //QRGAME_IMEMORY_H
