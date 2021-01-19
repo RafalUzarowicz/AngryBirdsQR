@@ -16,7 +16,6 @@ SharedQueueGame::~SharedQueueGame() {
 }
 void SharedQueueGame::sendMsg(GameData* msg) const{
     mq_send(queue, (const char*)msg, sizeof(GameData), 0);
-    //todo add to queue
 }
 
 void SharedQueueGame::receiveMsg(GameData* msg) const{
