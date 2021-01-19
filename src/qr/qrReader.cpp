@@ -5,12 +5,6 @@
 #include <opencv2/calib3d.hpp>
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include "../memory/IGame.h"
-#include "../memory/IVideo.h"
-#include "../memory/QueueGame.h"
-#include "../memory/QueueVideo.h"
-#include "../memory/SharedGame.h"
-#include "../memory/SharedVideo.h"
 
 using namespace cv;
 using namespace std;
