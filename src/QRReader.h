@@ -1,5 +1,3 @@
-
-
 #ifndef QRGAME_QRREADER_H
 #define QRGAME_QRREADER_H
 
@@ -10,7 +8,6 @@ public:
     void run() override{
 
     }
-
 };
 
 

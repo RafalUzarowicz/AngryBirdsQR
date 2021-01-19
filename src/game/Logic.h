@@ -34,14 +34,10 @@ public:
         }
     }
 
-    void update(InputManager::Command command, int height, int width, double deltaTime){
+    void update(double movement, int height, int width, double deltaTime){
 
         // Move player
-        if( command == InputManager::UP && player.getY() > 1){
-            player.setY(player.getY()-1);
-        } else if( command == InputManager::DOWN && (player.getY() + player.getSprite().sprite.size() < height - 1) ){
-            player.setY(player.getY()+1);
-        }
+        player.setY(movement*(height-2-player.getSprite().sprite.size()) + 1);
 
         // Move walls
         for( auto& wall : walls ){

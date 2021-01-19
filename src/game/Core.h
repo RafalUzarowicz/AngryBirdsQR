@@ -11,15 +11,10 @@ class Core{
 private:
     Window* window;
     Logic* game;
-    InputManager::Command command;
-
-    const double FPS = 60.0;
-    const double frameTime = 1000.0/FPS;
 public:
     explicit Core(){
         this->game = new Logic();
         this->window = new Window(game);
-        this->command = InputManager::NONE;
     }
 
     ~Core(){
@@ -33,13 +28,13 @@ public:
 
         double lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         double deltaTime, nowTime;
-        double dTime, lTime = lastTime;
 
-        while(command != InputManager::QUIT){
+        double movement = 0.0;
+
+        while(kill(getppid(), 0) == 0){
             // Measure time
             nowTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
             deltaTime = nowTime - lastTime;
-            dTime = nowTime - lTime;
             // Check resize
             window->resize();
             // TODO Read input
@@ -47,16 +42,13 @@ public:
             // TODO Process input
 
             // Update game
-            game->update(command, window->getHeight(), window->getWidth(), deltaTime / 1000.0);
+            game->update(movement, window->getHeight(), window->getWidth(), deltaTime / 1000.0);
 
-            if(dTime > frameTime){
-                // Clear screen
-                Window::clear();
-                // Draw
-                window->draw();
+            // Clear screen
+            Window::clear();
+            // Draw
+            window->draw();
 
-                lTime = nowTime;
-            }
             lastTime = nowTime;
         }
     }

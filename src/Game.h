@@ -1,5 +1,3 @@
-
-
 #ifndef QRGAME_GAME_H
 #define QRGAME_GAME_H
 
