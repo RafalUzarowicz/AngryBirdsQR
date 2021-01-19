@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="QRGame"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\local\;CMake Files\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/anton/Desktop/QRGame/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/anton/Desktop/QRGame/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="QRGameTest">
+				<Option output="/home/anton/Desktop/QRGame/cmake-build-debug/QRGameTest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anton/Desktop/QRGame/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include/opencv4"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 QRGameTest"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="QRGameTest/fast">
+				<Option output="/home/anton/Desktop/QRGame/cmake-build-debug/QRGameTest" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anton/Desktop/QRGame/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include/opencv4"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 QRGameTest/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/anton/Desktop/QRGame/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="QRGame">
+				<Option output="/home/anton/Desktop/QRGame/cmake-build-debug/QRGame" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anton/Desktop/QRGame/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include/opencv4"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 QRGame"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="QRGame/fast">
+				<Option output="/home/anton/Desktop/QRGame/cmake-build-debug/QRGame" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/anton/Desktop/QRGame/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include/opencv4"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 QRGame/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/anton/Desktop/QRGame/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/anton/Desktop/QRGame/main.cpp">
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/Game.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/IProcess.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/ImageFactory.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/InputManager.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/QRGame.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/QRReader.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/game/Core.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/game/Logic.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/game/Player.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/game/Sprite.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/game/Wall.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/game/Window.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/image/CameraHandler.cpp">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/image/CameraHandler.h">
+			<Option target="QRGameTest"/>
+			<Option target="QRGame"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/src/image/tests.cpp">
+			<Option target="QRGameTest"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/../../../../usr/local/lib/cmake/opencv4/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/../../../../usr/local/lib/cmake/opencv4/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/../../../../usr/local/lib/cmake/opencv4/OpenCVModules-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/anton/Desktop/QRGame/../../../../usr/local/lib/cmake/opencv4/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\local\lib\cmake\opencv4\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
