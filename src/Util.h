@@ -15,21 +15,23 @@ const char GAME_MEM_NAME[] = "/game_mem";
 const char VIDEO_MEM_NAME[] = "/video_mem";
 const char GAME_MQ[] ="/game_mq";
 const char VIDEO_MQ[] ="/video_mq";
-using namespace std::chrono;
 
-
+enum CommunicationType{
+    QUEUE,
+    SHARED_MEMORY
+};
 
 struct GameData{
     int id{};
     double percentage{};
-    system_clock::time_point timestamp{};
+    std::chrono::system_clock::time_point timestamp{};
 };
 
 struct VideoData{
     int id{};
     int height{};
     int width{};
-    system_clock::time_point timestamp{};
+    std::chrono::system_clock::time_point timestamp{};
     char image[MAX_HEIGHT * MAX_WIDTH * PIXEL_SIZE];
 };
 
