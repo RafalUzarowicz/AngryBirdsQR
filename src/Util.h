@@ -3,9 +3,9 @@
 
 #include <chrono>
 
-#define MAX_WIDTH 1920
-#define MAX_HEIGHT 1080
-#define PIXEL_SIZE 3
+const static int MAX_WIDTH = 1920;
+const static int MAX_HEIGHT = 1080;
+const static int PIXEL_SIZE = 3;
 
 const char SEM_VIDEO_PROD[] =  "/video_prod";
 const char SEM_VIDEO_CONS[] = "/video_cons";
@@ -17,13 +17,16 @@ const char GAME_MQ[] ="/game_mq";
 const char VIDEO_MQ[] ="/video_mq";
 using namespace std::chrono;
 
-//data structures
+
+
 struct GameData{
+    int id{};
     double percentage{};
     system_clock::time_point timestamp{};
 };
 
 struct VideoData{
+    int id{};
     int height{};
     int width{};
     system_clock::time_point timestamp{};
