@@ -1,0 +1,15 @@
+#!/bin/bash
+
+rm QRGame
+rm Makefile
+rm CMakeCache.txt
+
+cmake CMakeLists.txt
+
+make
+
+./QRGame
+
+rm CMakeCache.txt
+rm Makefile
+rm QRGame
