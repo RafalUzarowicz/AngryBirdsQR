@@ -4,7 +4,7 @@
 
 #include <random>
 #include <iostream>
-#include "InputManager.h"
+#include "../InputManager.h"
 #include "Player.h"
 #include "Wall.h"
 

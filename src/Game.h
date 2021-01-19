@@ -7,9 +7,16 @@
 #include "game/Core.h"
 
 class Game: public IProcess {
+    Core* core;
 public:
+    Game(){
+        core = new Core();
+    }
+    ~Game(){
+        delete core;
+    }
     void run() override{
-
+        core->run();
     }
 
 };

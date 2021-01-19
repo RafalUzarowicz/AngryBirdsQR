@@ -1,38 +1,33 @@
 #ifndef QRGAME_CORE_H
 #define QRGAME_CORE_H
 
-
 #include <ctime>
 #include <chrono>
 #include "Window.h"
 #include "Logic.h"
-#include "InputManager.h"
 #include "../IProcess.h"
 
-class Core: public IProcess {
+class Core{
 private:
     Window* window;
     Logic* game;
-    InputManager* inputManager;
     InputManager::Command command;
 
     const double FPS = 60.0;
     const double frameTime = 1000.0/FPS;
 public:
-    explicit Core(InputManager* inputManager) :{
+    explicit Core(){
         this->game = new Logic();
         this->window = new Window(game);
-        this->inputManager = inputManager == nullptr ? new InputManager() : inputManager;
         this->command = InputManager::NONE;
     }
 
     ~Core(){
         delete window;
         delete game;
-        delete inputManager;
     }
 
-    void run() override{
+    void run(){
         window->initialize();
         game->initialize(window->getHeight(), window->getWidth());
 
@@ -47,10 +42,10 @@ public:
             dTime = nowTime - lTime;
             // Check resize
             window->resize();
-            // Update input
-            inputManager->update();
-            // Process input
-            command = inputManager->getCommand();
+            // TODO Read input
+
+            // TODO Process input
+
             // Update game
             game->update(command, window->getHeight(), window->getWidth(), deltaTime / 1000.0);
 

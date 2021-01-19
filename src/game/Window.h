@@ -63,16 +63,7 @@ private:
     Logic* game;
 public:
     explicit Window(Logic* game) : game(game){
-        initscr();
-        raw();
-        cbreak();
-        nodelay(stdscr, TRUE);
-        keypad(stdscr, FALSE);
-        noecho();
         resize();
-    }
-    ~Window(){
-        endwin();
     }
 
     void initialize(){
