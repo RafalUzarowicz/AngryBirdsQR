@@ -13,9 +13,6 @@ SharedQueueVideo::SharedQueueVideo(bool write, bool non_block, long msgNum){
     attr.mq_msgsize = sizeof (VideoData);
     queue = mq_open(VIDEO_MQ, flags, attr);
 }
-SharedQueueVideo::~SharedQueueVideo(){
-    mq_unlink(VIDEO_MQ);
-}
 
 void SharedQueueVideo::sendMsg(VideoData* msg) const{
     mq_send(queue, (const char*)msg, sizeof(VideoData), 0);

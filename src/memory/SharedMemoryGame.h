@@ -13,7 +13,7 @@
 class SharedMemoryGame {
 public:
     SharedMemoryGame();
-    ~SharedMemoryGame();
+    ~SharedMemoryGame() = default;
 
     template<typename Func, typename ... Args>
     void sendData(Func f, Args&&... args);

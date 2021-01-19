@@ -15,7 +15,7 @@
 class SharedMemoryVideo {
 public:
     SharedMemoryVideo();
-    ~SharedMemoryVideo();
+    ~SharedMemoryVideo() = default;
 
     template<typename Func, typename... Args>
     void getData(Func f, Args&&... args);

@@ -11,7 +11,7 @@
 class SharedQueueGame {
 public:
     SharedQueueGame( bool write, bool non_block, long msgNum=1);
-    ~SharedQueueGame();
+    ~SharedQueueGame() = default;
 
     void sendMsg(GameData* msg) const;
 

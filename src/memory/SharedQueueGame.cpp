@@ -11,9 +11,6 @@ SharedQueueGame::SharedQueueGame( bool write, bool non_block, long msgNum) {
     attr.mq_msgsize = sizeof (GameData);
     queue = mq_open(GAME_MQ, flags, attr);
 }
-SharedQueueGame::~SharedQueueGame() {
-    mq_unlink(GAME_MQ);
-}
 void SharedQueueGame::sendMsg(GameData* msg) const{
     mq_send(queue, (const char*)msg, sizeof(GameData), 0);
 }
