@@ -180,7 +180,7 @@ void CameraHandler::captureFrame() {
     write(jpgfile, this->buffer, bufferinfo.length);
     close(jpgfile);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(this->frameDelay));
+
 
     // loop ends here
 
@@ -245,4 +245,8 @@ void CameraHandler::setFrameDelay(int delay) {
 
 unsigned char *CameraHandler::getBuffer() const {
     return buffer;
+}
+
+int CameraHandler::getFrameDelay() const {
+    return frameDelay;
 }

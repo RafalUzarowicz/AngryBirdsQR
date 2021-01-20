@@ -41,7 +41,11 @@ class CameraHandler {
         int imageHeight;
 
         int frameDelay;
-        std::string filename;
+public:
+    int getFrameDelay() const;
+
+private:
+    std::string filename;
 
         struct v4l2_buffer infoBuffer{};
         unsigned char * buffer {nullptr};
