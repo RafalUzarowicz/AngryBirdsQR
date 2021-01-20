@@ -105,7 +105,7 @@ private:
         raw();
         cbreak();
         nodelay(stdscr, TRUE);
-        keypad(stdscr, FALSE);
+//        keypad(stdscr, FALSE);
         noecho();
     }
 
@@ -116,7 +116,7 @@ private:
     }
 
     void runChildren(){
-        image_proc = runProcess(imageFactory);
+//        image_proc = runProcess(imageFactory);
         qr_proc = runProcess(qrReader);
         game_proc = runProcess(game);
     }
@@ -173,10 +173,10 @@ private:
 
     static void setup(){
         QRGame::unlink();
-        sem_open(SEM_VIDEO_PROD, O_CREAT, 0660, 0);
-        sem_open(SEM_VIDEO_CONS, O_CREAT, 0660, 1);
-        sem_open(SEM_GAME_PROD, O_CREAT, 0660, 0);
-        sem_open(SEM_GAME_CONS, O_CREAT, 0660, 1);
+        sem_open(SEM_VIDEO_PROD, O_CREAT, 0660, 1);
+        sem_open(SEM_VIDEO_CONS, O_CREAT, 0660, 0);
+        sem_open(SEM_GAME_PROD, O_CREAT, 0660, 1);
+        sem_open(SEM_GAME_CONS, O_CREAT, 0660, 0);
 
         int gameDataSize = sizeof(GameData);
         int videoDataSize = sizeof(VideoData);
@@ -192,8 +192,10 @@ private:
         mq_open(VIDEO_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, videoAttr);
 
         int gameSgmFd = shm_open(GAME_MEM_NAME, O_CREAT | O_RDWR, 0660);
+//        std::cout<<gameSgmFd<<"  "<<'\n';
         ftruncate(gameSgmFd, gameDataSize);
         int videoSgmFd = shm_open(VIDEO_MEM_NAME, O_CREAT | O_RDWR, 0660);
+//        std::cout<<videoSgmFd<<"  "<<'\n';
         ftruncate(videoSgmFd, videoDataSize);
     }
 

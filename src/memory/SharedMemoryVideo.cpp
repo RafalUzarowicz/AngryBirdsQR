@@ -14,7 +14,10 @@ SharedMemoryVideo::SharedMemoryVideo(){
     fstat(sh_memory, &mem_stat);
     size = mem_stat.st_size;
 
-    data = static_cast<VideoData *>(mmap(nullptr,sh_memory, size, PROT_WRITE | PROT_READ, MAP_SHARED, 0));
+    data = new VideoData();
+
+    data = static_cast<VideoData *>(mmap(nullptr, size, PROT_WRITE | PROT_READ, MAP_SHARED, sh_memory, 0));
+
 
     errno = 0;
     if((this->producer = sem_open(SEM_VIDEO_PROD, 0))==SEM_FAILED){

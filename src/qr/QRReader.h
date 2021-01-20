@@ -30,32 +30,42 @@ private:
     CommunicationType commsTypeQrToGame;
 public:
     QRReader(CommunicationType commsTypeImageToQr, CommunicationType commsTypeQrToGame, bool isQueueBlockingVideo = false, bool isQueueBlockingGame = false) : commsTypeImageToQr(commsTypeImageToQr), commsTypeQrToGame(commsTypeQrToGame), mq_video(false, isQueueBlockingVideo), mq_game(true, isQueueBlockingGame){
-
+//        std::cout<<"xdkonst\n";
     }
     void run() override{
+//        std::cout<<"xd0\n";
         QRData data{};
+        VideoData videoData{};
         while(kill(getppid(), 0) == 0) {
-            /*----SHARED MEMORY-----*/
-
-            mem_video.getData(findQr, mem_video, &data);
-            /*---QUEUE----*/
-            VideoData videoData;
-            findQr2(&data, &videoData);
+//            std::cout<<"xd1\n";
+            if(commsTypeImageToQr == SHARED_MEMORY){
+//                std::cout<<"xd2\n";
+                mem_video.getData(findQr, mem_video, &data);
+            }else{
+//                std::cout<<"xd3\n";
+                mq_video.receiveMsg(&videoData);
+                findQr2(&data, &videoData);
+            }
             if(data.found){
-                GameData gameData;
+//                std::cout<<"xd5\n";
+                GameData gameData{};
                 gameData.percentage = getPercent(&data);
                 gameData.id = data.id;
                 gameData.timestamp = std::chrono::system_clock::now();
-                /*---Shared MEM---*/
-                mem_game.sendData(sendPosition, mem_game, &gameData);
-                /*---send via msq---*/
-                mq_game.sendMsg(& gameData);
+                if(commsTypeQrToGame ==SHARED_MEMORY){
+                    mem_game.sendData(sendPosition, mem_game, &gameData);
+                }else{
+                    mq_game.sendMsg(& gameData);
+                }
             }
         }
     }
 private:
     static void findQr(SharedMemoryVideo & shm, QRData* qrData){
+//        std::cout<<shm.data->height<<'\n';
+//        std::cout<<shm.data<<"\n";
         cv::Mat img(shm.data->height, shm.data->width, CV_8UC1, &shm.data->image[0]);
+//        std::cout<<"xd4\n";
         qrData->id = shm.data->id;
         QRCodeDetector qrDetector;
         Mat bbox;
