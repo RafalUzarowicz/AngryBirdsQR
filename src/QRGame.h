@@ -1,6 +1,7 @@
 #ifndef QRGAME_QRGAME_H
 #define QRGAME_QRGAME_H
 
+#include "qr/QRReader.h"
 #include "Game.h"
 #include <unistd.h>
 #include <csignal>
@@ -12,7 +13,6 @@
 #include <sys/mman.h>
 #include "IProcess.h"
 #include "Util.h"
-#include "qr/QRReader.h"
 #include "ImageFactory.h"
 
 class QRGame: public IProcess {
@@ -78,6 +78,7 @@ public:
             command = inputManager->getCommand();
             // Check if children are alive
             if(waitpid(0, &status, WNOHANG) != 0){
+                std::cout<<"xd\n";
                 break;
             }
         }

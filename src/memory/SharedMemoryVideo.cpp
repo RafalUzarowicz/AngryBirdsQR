@@ -27,17 +27,3 @@ SharedMemoryVideo::SharedMemoryVideo(){
         exit(-1);
     }
 }
-
-template<typename Func, typename... Args>
-void SharedMemoryVideo::getData(Func f, Args&&... args){
-    sem_wait(this->consumer);
-    f(std::forward<Args>(args)...);
-    sem_post(this->producer);
-}
-
-template<typename Func, typename... Args>
-void SharedMemoryVideo::sendData(Func f, Args&&... args){
-    sem_wait(this->producer);
-    f(std::forward<Args>(args)...);
-    sem_post(this->consumer);
-}

@@ -7,6 +7,8 @@
 #include "../memory/SharedQueueGame.h"
 #include "../memory/SharedQueueVideo.h"
 #include <opencv2/opencv.hpp>
+#include <unistd.h>
+#include <csignal>
 #include "../Util.h"
 #include "../memory/SharedMemoryVideo.h"
 using namespace cv;
@@ -20,13 +22,13 @@ struct QRData{
 };
 class QRReader: public IProcess {
 public:
-    [[noreturn]] void run() override{
+    void run() override{
         QRData data{};
         SharedMemoryVideo mem_video{};
         SharedMemoryGame mem_game{};
         SharedQueueVideo mq_video(false, false);
         SharedQueueGame mq_game(false, false);
-        while(true) {
+        while(kill(getppid(), 0) == 0) {
             /*----SHARED MEMORY-----*/
 
             mem_video.getData(findQr, mem_video, &data);

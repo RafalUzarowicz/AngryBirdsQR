@@ -11,6 +11,7 @@
 #include "../Util.h"
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <utility>
 
 class SharedMemoryVideo {
 public:
@@ -18,10 +19,18 @@ public:
     ~SharedMemoryVideo() = default;
 
     template<typename Func, typename... Args>
-    void getData(Func f, Args&&... args);
+    void getData(Func f, Args&&... args){
+        sem_wait(this->consumer);
+        f(std::forward<Args>(args)...);
+        sem_post(this->producer);
+    }
 
     template<typename Func, typename... Args>
-    void sendData(Func f, Args&&... args);
+    void sendData(Func f, Args&&... args){
+        sem_wait(this->producer);
+        f(std::forward<Args>(args)...);
+        sem_post(this->consumer);
+    }
 
     VideoData * data;
 private:
