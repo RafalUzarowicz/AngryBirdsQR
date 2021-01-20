@@ -110,8 +110,8 @@ private:
     }
 
     void createChildren(){
-        imageFactory = new ImageFactory();
-        qrReader = new QRReader();
+        imageFactory = new ImageFactory(imageToQr, blockQueueVideoImage);
+        qrReader = new QRReader(imageToQr, qrToGame, blockQueueVideoQr, blockQueueGameQr);
         game = new Game(qrToGame, blockQueueGameGame);
     }
 
