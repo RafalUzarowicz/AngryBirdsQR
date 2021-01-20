@@ -111,7 +111,7 @@ private:
     void createChildren(){
         imageFactory = new ImageFactory();
         qrReader = new QRReader();
-        game = new Game();
+        game = new Game(qrToGame, blockQueueGameGame);
     }
 
     void runChildren(){
