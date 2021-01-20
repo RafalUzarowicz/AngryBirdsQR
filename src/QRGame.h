@@ -181,13 +181,11 @@ private:
         int videoDataSize = sizeof(VideoData);
 
         mq_attr gameAttr{};
-        gameAttr.mq_flags = O_CREAT | O_RDWR | O_NONBLOCK;
         gameAttr.mq_maxmsg = 1;
         gameAttr.mq_msgsize = gameDataSize;
         mq_open(GAME_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, gameAttr);
 
         mq_attr videoAttr{};
-        videoAttr.mq_flags = O_CREAT | O_RDWR | O_NONBLOCK;
         videoAttr.mq_maxmsg = 1;
         videoAttr.mq_msgsize = videoDataSize;
         mq_open(VIDEO_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, videoAttr);
