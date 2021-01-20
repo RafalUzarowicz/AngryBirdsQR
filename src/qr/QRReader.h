@@ -21,13 +21,19 @@ struct QRData{
     //todo timestamp?
 };
 class QRReader: public IProcess {
+private:
+    SharedMemoryVideo mem_video;
+    SharedMemoryGame mem_game;
+    SharedQueueVideo mq_video;
+    SharedQueueGame mq_game;
+    CommunicationType commsTypeImageToQr;
+    CommunicationType commsTypeQrToGame;
 public:
+    QRReader(CommunicationType commsTypeImageToQr, CommunicationType commsTypeQrToGame, bool isQueueBlockingVideo = false, bool isQueueBlockingGame = false) : commsTypeImageToQr(commsTypeImageToQr), commsTypeQrToGame(commsTypeQrToGame), mq_video(false, isQueueBlockingVideo), mq_game(true, isQueueBlockingGame){
+
+    }
     void run() override{
         QRData data{};
-        SharedMemoryVideo mem_video{};
-        SharedMemoryGame mem_game{};
-        SharedQueueVideo mq_video(false, false);
-        SharedQueueGame mq_game(false, false);
         while(kill(getppid(), 0) == 0) {
             /*----SHARED MEMORY-----*/
 

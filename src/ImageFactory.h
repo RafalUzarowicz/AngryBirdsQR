@@ -5,7 +5,14 @@
 #include "image/CameraHandler.h"
 
 class ImageFactory: public IProcess {
+private:
+    SharedQueueVideo sharedQueueVideo;
+    SharedMemoryVideo sharedMemoryVideo;
+    CommunicationType communicationType;
 public:
+    ImageFactory(CommunicationType communicationType, bool isQueueBlocking = false) : communicationType(communicationType), sharedQueueVideo(false, isQueueBlocking){
+
+    }
     void run() override{
 
         CameraHandler * handler = new CameraHandler();
