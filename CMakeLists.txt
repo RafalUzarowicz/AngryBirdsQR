@@ -10,6 +10,8 @@ include_directories( ${CURSES_INCLUDE_DIR} )
 
 add_executable(QRGame
         main.cpp
+        src/game/Window.h src/game/Core.h src/InputManager.h src/game/Logic.h src/game/Player.h src/game/Wall.h src/game/Sprite.h
+        src/IProcess.h src/QRGame.h src/Game.h src/ImageFactory.h src/qr/QRReader.h
         src/game/Window.h src/InputManager.h src/game/Logic.h src/game/Player.h src/game/Wall.h src/game/Sprite.h
         src/IProcess.h src/QRGame.h src/Game.h src/ImageFactory.h src/QRReader.h
         src/image/CameraHandler.cpp src/image/CameraHandler.h
