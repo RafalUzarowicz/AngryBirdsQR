@@ -6,8 +6,6 @@
 class InputManager {
 public:
     enum Command{
-        UP,
-        DOWN,
         QUIT,
         NONE
     };
@@ -16,13 +14,8 @@ public:
 
     void update(){
         int c = getch();
-
         if(c == 'Q' || c == 'q'){
             current = QUIT;
-        } else if( c == 'w' || c == 'W'){
-            current = UP;
-        } else if( c == 's' || c == 'S'){
-            current = DOWN;
         } else {
             current = NONE;
         }

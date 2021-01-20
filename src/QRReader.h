@@ -6,7 +6,9 @@
 class QRReader: public IProcess {
 public:
     void run() override{
+        while(kill(getppid(), 0) == 0){
 
+        }
     }
 };
 
