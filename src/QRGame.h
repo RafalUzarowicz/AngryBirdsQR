@@ -1,6 +1,7 @@
 #ifndef QRGAME_QRGAME_H
 #define QRGAME_QRGAME_H
 
+#include "Game.h"
 #include <unistd.h>
 #include <csignal>
 #include <wait.h>
@@ -10,10 +11,9 @@
 #include <mqueue.h>
 #include <sys/mman.h>
 #include "IProcess.h"
-#include "Game.h"
 #include "Util.h"
+#include "qr/QRReader.h"
 #include "ImageFactory.h"
-#include "QRReader.h"
 
 class QRGame: public IProcess {
 private:

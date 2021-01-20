@@ -4,6 +4,8 @@
 #include "IProcess.h"
 #include <ctime>
 #include <chrono>
+#include <unistd.h>
+#include <csignal>
 #include "game/Window.h"
 #include "game/Logic.h"
 #include "IProcess.h"
