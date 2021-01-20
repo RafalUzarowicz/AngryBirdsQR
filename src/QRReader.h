@@ -7,12 +7,12 @@
 #include "memory/SharedQueueGame.h"
 #include "memory/SharedQueueVideo.h"
 #include <opencv2/opencv.hpp>
-#include "../Util.h"
+#include "Util.h"
 #include "memory/SharedMemoryVideo.h"
-#include "memory/SharedQueueVideo.h"
+using namespace cv;
 
 struct QRData{
-    Mat* bbox{};
+    cv::Mat* bbox{};
     int height{};
     bool found =false;
     int id{};
@@ -24,8 +24,8 @@ public:
         QRData data{};
         SharedMemoryVideo mem_video{};
         SharedMemoryGame mem_game{};
-        SharedQueueVideo mq_video{};
-        SharedQueueGame mq_game{};
+        SharedQueueVideo mq_video(false, false);
+        SharedQueueGame mq_game(false, false);
         while(true) {
             /*----SHARED MEMORY-----*/
             mem_video.getData(findQr, &mem_video, &data);
@@ -46,33 +46,33 @@ public:
     }
 private:
     static void findQr(SharedMemoryVideo & shm, QRData* qrData){
-        cv::Mat img(shm.data.height, shm.data.width, CV_8UC1, &shm.data.image[0]);
-        qrData.id = shm.data.id;
+        cv::Mat img(shm.data->height, shm.data->width, CV_8UC1, &shm.data->image[0]);
+        qrData->id = shm.data->id;
         QRCodeDetector qrDetector;
         Mat bbox;
         if(qrDetector.detect(img, bbox)){
             if(bbox.cols==4){
                 qrData->bbox = &bbox;
-                qrData->height = data.height;
+                qrData->height = shm.data->height;
                 qrData->found = true;
             }
         }
     }
     static void findQr(QRData* qrData, VideoData* videoData){
-        cv::Mat img(videoData.height, videoData.width, CV_8UC1, &videoData.image[0]);
-        qrData.id = videoData.id;
+        cv::Mat img(videoData->height, videoData->width, CV_8UC1, &videoData.image[0]);
+        qrData->id = videoData->id;
         QRCodeDetector qrDetector;
         Mat bbox;
         if(qrDetector.detect(img, bbox)){
             if(bbox.cols==4){
                 qrData->bbox = &bbox;
-                qrData->height = data.height;
+                qrData->height = videoData->height;
                 qrData->found = true;
             }
         }
     }
     static void sendPosition(SharedMemoryVideo & shm, GameData* gamedata){
-        memcpy(shm.data, gamedata, sizeof(GameData))
+        memcpy(shm.data, gamedata, sizeof(GameData));
     }
     static double getPercent(QRData * data){
         int max_y=0, min_y=data->height;
@@ -85,7 +85,7 @@ private:
         int lower_bound = (max_y - min_y)/2;
         int upper_bound = data->height- (max_y -min_y)/2;
         int middle = (max_y + min_y)/2;
-        return percent = (middle-lower_bound)/(double)(upper_bound-lower_bound);
+        return  (middle-lower_bound)/(double)(upper_bound-lower_bound);
     }
 };
 
