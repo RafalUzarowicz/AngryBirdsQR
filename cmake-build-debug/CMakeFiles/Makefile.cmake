@@ -57,6 +57,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/QRGameTest.dir/DependInfo.cmake"
   "CMakeFiles/QRGame.dir/DependInfo.cmake"
   )

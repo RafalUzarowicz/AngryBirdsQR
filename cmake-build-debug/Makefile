@@ -131,19 +131,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named QRGameTest
-
-# Build rule for target.
-QRGameTest: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 QRGameTest
-.PHONY : QRGameTest
-
-# fast build rule for target.
-QRGameTest/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGameTest.dir/build.make CMakeFiles/QRGameTest.dir/build
-.PHONY : QRGameTest/fast
-
-#=============================================================================
 # Target rules for targets named QRGame
 
 # Build rule for target.
@@ -189,7 +176,6 @@ src/image/CameraHandler.o: src/image/CameraHandler.cpp.o
 
 # target to build an object file
 src/image/CameraHandler.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGameTest.dir/build.make CMakeFiles/QRGameTest.dir/src/image/CameraHandler.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGame.dir/build.make CMakeFiles/QRGame.dir/src/image/CameraHandler.cpp.o
 .PHONY : src/image/CameraHandler.cpp.o
 
@@ -199,7 +185,6 @@ src/image/CameraHandler.i: src/image/CameraHandler.cpp.i
 
 # target to preprocess a source file
 src/image/CameraHandler.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGameTest.dir/build.make CMakeFiles/QRGameTest.dir/src/image/CameraHandler.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGame.dir/build.make CMakeFiles/QRGame.dir/src/image/CameraHandler.cpp.i
 .PHONY : src/image/CameraHandler.cpp.i
 
@@ -209,36 +194,8 @@ src/image/CameraHandler.s: src/image/CameraHandler.cpp.s
 
 # target to generate assembly for a file
 src/image/CameraHandler.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGameTest.dir/build.make CMakeFiles/QRGameTest.dir/src/image/CameraHandler.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGame.dir/build.make CMakeFiles/QRGame.dir/src/image/CameraHandler.cpp.s
 .PHONY : src/image/CameraHandler.cpp.s
-
-src/image/tests.o: src/image/tests.cpp.o
-
-.PHONY : src/image/tests.o
-
-# target to build an object file
-src/image/tests.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGameTest.dir/build.make CMakeFiles/QRGameTest.dir/src/image/tests.cpp.o
-.PHONY : src/image/tests.cpp.o
-
-src/image/tests.i: src/image/tests.cpp.i
-
-.PHONY : src/image/tests.i
-
-# target to preprocess a source file
-src/image/tests.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGameTest.dir/build.make CMakeFiles/QRGameTest.dir/src/image/tests.cpp.i
-.PHONY : src/image/tests.cpp.i
-
-src/image/tests.s: src/image/tests.cpp.s
-
-.PHONY : src/image/tests.s
-
-# target to generate assembly for a file
-src/image/tests.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/QRGameTest.dir/build.make CMakeFiles/QRGameTest.dir/src/image/tests.cpp.s
-.PHONY : src/image/tests.cpp.s
 
 # Help Target
 help:
@@ -249,16 +206,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... QRGame"
-	@echo "... QRGameTest"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
 	@echo "... src/image/CameraHandler.o"
 	@echo "... src/image/CameraHandler.i"
 	@echo "... src/image/CameraHandler.s"
-	@echo "... src/image/tests.o"
-	@echo "... src/image/tests.i"
-	@echo "... src/image/tests.s"
 .PHONY : help
 
 

@@ -114,6 +114,23 @@ QRGame_EXTERNAL_OBJECTS =
 QRGame: CMakeFiles/QRGame.dir/main.cpp.o
 QRGame: CMakeFiles/QRGame.dir/src/image/CameraHandler.cpp.o
 QRGame: CMakeFiles/QRGame.dir/build.make
+QRGame: /usr/lib/x86_64-linux-gnu/libcurses.so
+QRGame: /usr/lib/x86_64-linux-gnu/libform.so
+QRGame: /usr/local/lib/libopencv_gapi.so.4.5.1
+QRGame: /usr/local/lib/libopencv_highgui.so.4.5.1
+QRGame: /usr/local/lib/libopencv_ml.so.4.5.1
+QRGame: /usr/local/lib/libopencv_objdetect.so.4.5.1
+QRGame: /usr/local/lib/libopencv_photo.so.4.5.1
+QRGame: /usr/local/lib/libopencv_stitching.so.4.5.1
+QRGame: /usr/local/lib/libopencv_video.so.4.5.1
+QRGame: /usr/local/lib/libopencv_videoio.so.4.5.1
+QRGame: /usr/local/lib/libopencv_dnn.so.4.5.1
+QRGame: /usr/local/lib/libopencv_imgcodecs.so.4.5.1
+QRGame: /usr/local/lib/libopencv_calib3d.so.4.5.1
+QRGame: /usr/local/lib/libopencv_features2d.so.4.5.1
+QRGame: /usr/local/lib/libopencv_flann.so.4.5.1
+QRGame: /usr/local/lib/libopencv_imgproc.so.4.5.1
+QRGame: /usr/local/lib/libopencv_core.so.4.5.1
 QRGame: CMakeFiles/QRGame.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/anton/Desktop/QRGame/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable QRGame"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/QRGame.dir/link.txt --verbose=$(VERBOSE)
