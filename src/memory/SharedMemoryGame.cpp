@@ -10,34 +10,21 @@
 #include <ftw.h>
 
 SharedMemoryGame::SharedMemoryGame(){
-    sh_memory = shm_open(GAME_MEM_NAME, O_RDWR, 0660);
+    sh_memory = shm_open(GAME_MEM_NAME, O_RDWR, 0777);
 
     struct stat mem_stat{};
     fstat(sh_memory, &mem_stat);
     size = mem_stat.st_size;
-
-    data = static_cast<GameData *>(mmap(nullptr,sh_memory, size, PROT_WRITE | PROT_READ, MAP_SHARED, 0));
-
+    data = static_cast<GameData *>(mmap(nullptr, size, PROT_WRITE | PROT_READ, MAP_SHARED,sh_memory, 0));
     errno = 0;
     if((this->producer = sem_open(SEM_GAME_PROD, 0))==SEM_FAILED){
-        std::cout<<strerror(errno);
+        std::cout<<strerror(errno)<<"a\n";
+        exit(0);
     }
     if((this->consumer = sem_open(SEM_GAME_CONS, 0))==SEM_FAILED){
-        std::cout<<strerror(errno);
+        std::cout<<strerror(errno)<<"b\n";
     }
     if(errno != 0){
         exit(-1);
     }
-}
-template<typename Func, typename ... Args>
-void SharedMemoryGame::sendData(Func f, Args&&... args){
-    sem_wait(this->consumer);
-    f(std::forward<Args>(args)...);
-    sem_post(this->producer);
-}
-template<typename Func,typename ... Args>
-void SharedMemoryGame::getData(Func f, Args&&... args){
-    sem_wait(this->producer);
-    f(std::forward<Args>(args)...);
-    sem_post(this->consumer);
 }

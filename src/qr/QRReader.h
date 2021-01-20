@@ -1,14 +1,14 @@
 #ifndef QRGAME_QRREADER_H
 #define QRGAME_QRREADER_H
 
-#include "IProcess.h"
-#include "memory/SharedMemoryGame.h"
-#include "memory/SharedMemoryVideo.h"
-#include "memory/SharedQueueGame.h"
-#include "memory/SharedQueueVideo.h"
+#include "../IProcess.h"
+#include "../memory/SharedMemoryGame.h"
+#include "../memory/SharedMemoryVideo.h"
+#include "../memory/SharedQueueGame.h"
+#include "../memory/SharedQueueVideo.h"
 #include <opencv2/opencv.hpp>
-#include "Util.h"
-#include "memory/SharedMemoryVideo.h"
+#include "../Util.h"
+#include "../memory/SharedMemoryVideo.h"
 using namespace cv;
 
 struct QRData{
@@ -28,17 +28,18 @@ public:
         SharedQueueGame mq_game(false, false);
         while(true) {
             /*----SHARED MEMORY-----*/
-            mem_video.getData(findQr, &mem_video, &data);
+
+            mem_video.getData(findQr, mem_video, &data);
             /*---QUEUE----*/
             VideoData videoData;
-            findQr(&data, &videoData);
+            findQr2(&data, &videoData);
             if(data.found){
                 GameData gameData;
                 gameData.percentage = getPercent(&data);
                 gameData.id = data.id;
                 gameData.timestamp = std::chrono::system_clock::now();
                 /*---Shared MEM---*/
-                mem_game.sendData(sendPosition, &mem_game, &gameData);
+                mem_game.sendData(sendPosition, mem_game, &gameData);
                 /*---send via msq---*/
                 mq_game.sendMsg(& gameData);
             }
@@ -58,8 +59,8 @@ private:
             }
         }
     }
-    static void findQr(QRData* qrData, VideoData* videoData){
-        cv::Mat img(videoData->height, videoData->width, CV_8UC1, &videoData.image[0]);
+    static void findQr2(QRData* qrData, VideoData* videoData){
+        cv::Mat img(videoData->height, videoData->width, CV_8UC1, &videoData->image[0]);
         qrData->id = videoData->id;
         QRCodeDetector qrDetector;
         Mat bbox;
@@ -71,8 +72,8 @@ private:
             }
         }
     }
-    static void sendPosition(SharedMemoryVideo & shm, GameData* gamedata){
-        memcpy(shm.data, gamedata, sizeof(GameData));
+    static void sendPosition(SharedMemoryGame & shm, GameData* gameData){
+        memcpy(shm.data, gameData, sizeof(GameData));
     }
     static double getPercent(QRData * data){
         int max_y=0, min_y=data->height;
