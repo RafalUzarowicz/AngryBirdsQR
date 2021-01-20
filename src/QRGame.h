@@ -147,17 +147,17 @@ private:
             cpu_set_t cpuSet;
 
             CPU_ZERO(&cpuSet);
-            CPU_SET(2, &cpuSet);
+            CPU_SET(3, &cpuSet);
 
             result |= sched_setaffinity(game_proc, sizeof(cpu_set_t), &cpuSet);
 
             CPU_ZERO(&cpuSet);
-            CPU_SET(2, &cpuSet);
+            CPU_SET(3, &cpuSet);
 
             result |= sched_setaffinity(image_proc, sizeof(cpu_set_t), &cpuSet);
 
             CPU_ZERO(&cpuSet);
-            CPU_SET(2, &cpuSet);
+            CPU_SET(3, &cpuSet);
 
             result |= sched_setaffinity(qr_proc, sizeof(cpu_set_t), &cpuSet);
 
@@ -270,7 +270,8 @@ private:
                     coreLimit = false;
                     return;
                 case '2':
-                    coreLimit = true;
+                    // TODO: zmienic na true i ogarnac te cpu
+                    coreLimit = false;
                     return;
                 default:
                     break;
