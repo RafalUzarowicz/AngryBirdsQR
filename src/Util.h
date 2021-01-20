@@ -21,13 +21,15 @@ using namespace std::chrono;
 struct GameData{
     double percentage{};
     system_clock::time_point timestamp{};
+    int id;
 };
 
 struct VideoData{
     int height{};
     int width{};
     system_clock::time_point timestamp{};
-    char image[MAX_HEIGHT * MAX_WIDTH * PIXEL_SIZE];
+    unsigned char image[MAX_HEIGHT * MAX_WIDTH * PIXEL_SIZE];
+    int id;
 };
 
 #endif //QRGAME_UTIL_H
