@@ -1,10 +1,10 @@
 #include "src/QRGame.h"
 
-/*int main()
+int main()
 {
     QRGame qrGame;
 
     qrGame.run();
 
     return 0;
-}*/
+}
