@@ -8,6 +8,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <stdio.h>
 
 // System libraries
 #include <fcntl.h>
@@ -20,8 +21,11 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
+#include <ftw.h>
+#include <opencv2/opencv.hpp>
 
 #include "CameraHandler.h"
+#include "../Util.h"
 
 
 using namespace std;
@@ -74,7 +78,9 @@ void CameraHandler::specifyFormat() {
     format.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     format.fmt.pix.width = this->imageHeight;
     format.fmt.pix.height = this->imageWidth;
-    format.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24;
+//    format.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB24;
+    format.fmt.pix.pixelformat = V4L2_PIX_FMT_MJPEG;
+//    format.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
 
     if (ioctl(this->fd, VIDIOC_S_FMT, &format) < 0) {
         perror("Inapropriate format for device, VIDIOC_S_FMT");
@@ -169,16 +175,42 @@ void CameraHandler::captureFrame() {
     int i = 0;
     std::ostringstream ss;
     ss << this->filename << i << ".jpeg";
+//    ss << "output.yuy";
 
     std::string filename = ss.str();
 
-    if ((jpgfile = open(filename.c_str(), O_WRONLY | O_CREAT, 0660)) < 0) {
+    if ((jpgfile = open(filename.c_str(), O_RDWR | O_CREAT, 0660)) < 0) {
         perror("open");
         exit(1);
     }
 
+    struct stat s;
+
+    fstat(jpgfile, &s);
+
+
     write(jpgfile, this->buffer, bufferinfo.length);
+    VideoData vd;
+    std::cout<<sizeof(VideoData::image)<<'\n';
+    lseek(jpgfile, 0, SEEK_SET);
+    int r = read(jpgfile, vd.image, sizeof(VideoData::image));
+    std::cout<<r<<'\n';
     close(jpgfile);
+
+    cv::Mat frame;
+    cv::VideoCapture videoCapture;
+    videoCapture.open(0, cv::CAP_ANY);
+    videoCapture.read(frame);
+
+//    CV_LOAD_IMAGE_COLOR
+
+    cv::Mat img(getHeight(), getWidth(), CV_16UC3, vd.image);
+//        std::cout<<"xd4\n";
+//    qrData->id = shm.data->id;
+//    QRCodeDetector qrDetector;
+//    Mat bbox;
+
+    bool ret = cv::imwrite("dwa.jpg", frame);
 
 
 

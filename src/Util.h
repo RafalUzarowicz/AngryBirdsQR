@@ -31,8 +31,9 @@ struct VideoData{
     int id{};
     int height{};
     int width{};
+    int type;
     std::chrono::system_clock::time_point timestamp{};
-    char image[MAX_HEIGHT * MAX_WIDTH * PIXEL_SIZE];
+    unsigned char image[MAX_HEIGHT * MAX_WIDTH * PIXEL_SIZE];
 };
 
 #endif //QRGAME_UTIL_H

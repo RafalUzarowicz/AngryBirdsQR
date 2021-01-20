@@ -14,6 +14,7 @@ private:
     SharedMemoryVideo sharedMemory;
     SharedQueueVideo sharedQueue;
     CommunicationType communicationType;
+    VideoData data;
 
 public:
 
@@ -24,50 +25,55 @@ public:
 
     void run() override{
 
-        handler->setWidth(640);
-        handler->setHeight(480);
-
-        handler->configure();
-        handler->setFrameDelay(200);
+//        handler->setWidth(640);
+//        handler->setHeight(480);
+//
+//        handler->configure();
+//        handler->setFrameDelay(200);
 
         int _id = 0;
 
-        int width = handler->getWidth();
-        int height = handler->getHeight();
+//        int width = handler->getWidth();
+//        int height = handler->getHeight();
+        double nowTime, deltaTime, lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         while(kill(getppid(), 0) == 0){
             // Measure time
             nowTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
             deltaTime = nowTime - lastTime;
+//            handler->captureFrame();
+//            unsigned char * buffer = handler->getBuffer();
+//            data.id = _id;
+//            data.width = width;
+//            data.height = height;
+//            for (int i = 0; i < height * width * 2; i++) {
+//                data.image[i] = buffer[i];
+//            }
+            data.timestamp = std::chrono::system_clock::now();
+            cv::Mat frame;
+            cv::VideoCapture videoCapture;
+            videoCapture.open(0, cv::CAP_ANY);
+            videoCapture.read(frame);
+            data.height = frame.rows;
+            data.width = frame.cols;
+            data.type = frame.type();
 
-            handler->captureFrame();
-            unsigned char * buffer = handler->getBuffer();
-            VideoData * data;
-            data->id = _id;
-            data->width = width;
-            data->height = height;
-
-            for (int i = 0; i < height * width * 3; i++) {
-                data->image[i] = buffer[i];
-            }
-
-            data->timestamp = std::chrono::system_clock::now();
+            memcpy(data.image, frame.data, frame.elemSize()*frame.total());
 
             if (communicationType == QUEUE) {
-                sharedQueue.sendMsg(data);
+                sharedQueue.sendMsg(&data);
             } else {
                 sharedMemory.sendData(sendImage, sharedMemory, &data);
             }
             _id += 1;
-            std::this_thread::sleep_for(std::chrono::milliseconds(this->getFrameDelay()));
         }
 
     }
 
-    static void sendImage(SharedMemory &shm, VideoData * data) {
-        memcpy(shm.data, data, sizeof(data));
+    static void sendImage(SharedMemoryVideo &shm, VideoData * data) {
+        memcpy(shm.data, data, sizeof(VideoData));
     }
 
-    void getImage()
+    void getImage(){}
 };
 
 

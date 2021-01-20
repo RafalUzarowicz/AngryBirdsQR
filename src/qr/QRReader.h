@@ -30,24 +30,18 @@ private:
     CommunicationType commsTypeQrToGame;
 public:
     QRReader(CommunicationType commsTypeImageToQr, CommunicationType commsTypeQrToGame, bool isQueueBlockingVideo = false, bool isQueueBlockingGame = false) : commsTypeImageToQr(commsTypeImageToQr), commsTypeQrToGame(commsTypeQrToGame), mq_video(false, isQueueBlockingVideo), mq_game(true, isQueueBlockingGame){
-//        std::cout<<"xdkonst\n";
     }
     void run() override{
-//        std::cout<<"xd0\n";
         QRData data{};
         VideoData videoData{};
         while(kill(getppid(), 0) == 0) {
-//            std::cout<<"xd1\n";
             if(commsTypeImageToQr == SHARED_MEMORY){
-//                std::cout<<"xd2\n";
                 mem_video.getData(findQr, mem_video, &data);
             }else{
-//                std::cout<<"xd3\n";
                 mq_video.receiveMsg(&videoData);
                 findQr2(&data, &videoData);
             }
             if(data.found){
-//                std::cout<<"xd5\n";
                 GameData gameData{};
                 gameData.percentage = getPercent(&data);
                 gameData.id = data.id;
@@ -62,13 +56,12 @@ public:
     }
 private:
     static void findQr(SharedMemoryVideo & shm, QRData* qrData){
-//        std::cout<<shm.data->height<<'\n';
-//        std::cout<<shm.data<<"\n";
-        cv::Mat img(shm.data->height, shm.data->width, CV_8UC1, &shm.data->image[0]);
-//        std::cout<<"xd4\n";
+        cv::Mat img(shm.data->height, shm.data->width, shm.data->type, shm.data->image);
+
         qrData->id = shm.data->id;
         QRCodeDetector qrDetector;
         Mat bbox;
+
         if(qrDetector.detect(img, bbox)){
             if(bbox.cols==4){
                 qrData->bbox = &bbox;
@@ -78,7 +71,7 @@ private:
         }
     }
     static void findQr2(QRData* qrData, VideoData* videoData){
-        cv::Mat img(videoData->height, videoData->width, CV_8UC1, &videoData->image[0]);
+        cv::Mat img(videoData->height, videoData->width, CV_8UC1, videoData->image);
         qrData->id = videoData->id;
         QRCodeDetector qrDetector;
         Mat bbox;
@@ -99,7 +92,9 @@ private:
         for(int i=0; i<4;i++){
             points[i] = Point(data->bbox->at<float>(2*i), data->bbox->at<float>(2*i +1));
             max_y = points[i].y>max_y?points[i].y:max_y;
+            std::cout<<max_y<<'\n';
             min_y = points[i].y<min_y?points[i].y:min_y;
+            std::cout<<min_y<<'\n';
         }
         int lower_bound = (max_y - min_y)/2;
         int upper_bound = data->height- (max_y -min_y)/2;

@@ -63,7 +63,7 @@ private:
     Logic* game;
 public:
     explicit Window(Logic* game) : game(game){
-        resize();
+        //resize();
     }
 
     void initialize(){

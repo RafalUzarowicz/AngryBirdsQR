@@ -24,10 +24,10 @@ private:
     CommunicationType imageToQr = SHARED_MEMORY;
     CommunicationType qrToGame = SHARED_MEMORY;
 
-    bool blockQueueVideoImage = true;
-    bool blockQueueVideoQr = true;
-    bool blockQueueGameQr = true;
-    bool blockQueueGameGame = true;
+    bool blockQueueVideoImage = false;
+    bool blockQueueVideoQr = false;
+    bool blockQueueGameQr = false;
+    bool blockQueueGameGame = false;
 
     bool coreLimit = false;
 
@@ -53,22 +53,24 @@ public:
         delete inputManager;
     }
     void run() override{
-        this->schedMenu();
-        this->coresMenu();
-        this->imagesToQrMenu();
-        if(imageToQr == QUEUE){
-            this->videoQueueImageTypeMenu();
-            this->videoQueueQrTypeMenu();
-        }
-        this->qrToGameMenu();
-        if(qrToGame == QUEUE){
-            this->gameQueueQrTypeMenu();
-            this->gameQueueGameTypeMenu();
-        }
-        QRGame::initializeWindow();
+//        this->schedMenu();
+//        this->coresMenu();
+//        this->imagesToQrMenu();
+//        if(imageToQr == QUEUE){
+//            this->videoQueueImageTypeMenu();
+//            this->videoQueueQrTypeMenu();
+//        }
+//        this->qrToGameMenu();
+//        if(qrToGame == QUEUE){
+//            this->gameQueueQrTypeMenu();
+//            this->gameQueueGameTypeMenu();
+//        }
+//        QRGame::initializeWindow();
         QRGame::setup();
         this->createChildren();
         this->runChildren();
+//        imageFactory->run();
+//        qrReader->run();
         this->sched();
         int status;
         while(command != InputManager::QUIT){
@@ -78,7 +80,6 @@ public:
             command = inputManager->getCommand();
             // Check if children are alive
             if(waitpid(0, &status, WNOHANG) != 0){
-                std::cout<<"xd\n";
                 break;
             }
         }
@@ -99,7 +100,7 @@ private:
 
     static void initializeWindow(){
         WINDOW * mainwin;
-        if ( (mainwin = initscr()) == NULL ) {
+        if ( (mainwin = initscr()) == nullptr ) {
             exit(EXIT_FAILURE);
         }
         raw();
@@ -116,7 +117,7 @@ private:
     }
 
     void runChildren(){
-//        image_proc = runProcess(imageFactory);
+        image_proc = runProcess(imageFactory);
         qr_proc = runProcess(qrReader);
         game_proc = runProcess(game);
     }
@@ -192,10 +193,8 @@ private:
         mq_open(VIDEO_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, videoAttr);
 
         int gameSgmFd = shm_open(GAME_MEM_NAME, O_CREAT | O_RDWR, 0660);
-//        std::cout<<gameSgmFd<<"  "<<'\n';
         ftruncate(gameSgmFd, gameDataSize);
         int videoSgmFd = shm_open(VIDEO_MEM_NAME, O_CREAT | O_RDWR, 0660);
-//        std::cout<<videoSgmFd<<"  "<<'\n';
         ftruncate(videoSgmFd, videoDataSize);
     }
 
