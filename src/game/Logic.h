@@ -10,7 +10,7 @@
 
 class Logic {
 private:
-    const int wallsGap = 20;
+    const int wallsGap = 30;
     const double playerSpeed = 10;
     int score = 0;
     Player player = Player(1, 1);

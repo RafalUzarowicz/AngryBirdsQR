@@ -1,25 +1,26 @@
 #ifndef QRGAME_QRREADER_H
 #define QRGAME_QRREADER_H
 
-#include "../IProcess.h"
-#include "../memory/SharedMemoryGame.h"
-#include "../memory/SharedMemoryVideo.h"
-#include "../memory/SharedQueueGame.h"
-#include "../memory/SharedQueueVideo.h"
+#include "IProcess.h"
+#include "memory/SharedMemoryGame.h"
+#include "memory/SharedMemoryVideo.h"
+#include "memory/SharedQueueGame.h"
+#include "memory/SharedQueueVideo.h"
 #include <opencv2/opencv.hpp>
 #include <unistd.h>
 #include <csignal>
-#include "../Util.h"
-#include "../memory/SharedMemoryVideo.h"
+#include "Util.h"
+#include "memory/SharedMemoryVideo.h"
 using namespace cv;
 
 struct QRData{
-    cv::Mat* bbox{};
-    int height{};
-    bool found =false;
     int id{};
-    //todo timestamp?
+    int height{};
+    bool found = false;
+    Point points[4];
+    std::chrono::system_clock::time_point timestamp{};
 };
+
 class QRReader: public IProcess {
 private:
     SharedMemoryVideo mem_video;
@@ -28,73 +29,92 @@ private:
     SharedQueueGame mq_game;
     CommunicationType commsTypeImageToQr;
     CommunicationType commsTypeQrToGame;
+//
+//    static QRCodeDetector qrDetector;
+//    static Mat bbox;
 public:
     QRReader(CommunicationType commsTypeImageToQr, CommunicationType commsTypeQrToGame, bool isQueueBlockingVideo = false, bool isQueueBlockingGame = false) : commsTypeImageToQr(commsTypeImageToQr), commsTypeQrToGame(commsTypeQrToGame), mq_video(false, isQueueBlockingVideo), mq_game(true, isQueueBlockingGame){
     }
     void run() override{
         QRData data{};
         VideoData videoData{};
+        GameData gameData{};
         while(kill(getppid(), 0) == 0) {
             if(commsTypeImageToQr == SHARED_MEMORY){
-                mem_video.getData(findQr, mem_video, &data);
+                mem_video.getData(findQrFromMemory, mem_video, &data);
             }else{
                 mq_video.receiveMsg(&videoData);
-                findQr2(&data, &videoData);
+                findQrFromQueue(&data, &videoData);
             }
             if(data.found){
-                GameData gameData{};
                 gameData.percentage = getPercent(&data);
                 gameData.id = data.id;
-                gameData.timestamp = std::chrono::system_clock::now();
+                gameData.timestamp = data.timestamp;
+
+                // TODO timestamp save
+
                 if(commsTypeQrToGame ==SHARED_MEMORY){
                     mem_game.sendData(sendPosition, mem_game, &gameData);
                 }else{
-                    mq_game.sendMsg(& gameData);
+                    mq_game.sendMsg(&gameData);
                 }
             }
         }
     }
 private:
-    static void findQr(SharedMemoryVideo & shm, QRData* qrData){
+    static void findQrFromMemory(SharedMemoryVideo & shm, QRData* qrData){
         cv::Mat img(shm.data->height, shm.data->width, shm.data->type, shm.data->image);
 
-        qrData->id = shm.data->id;
+        qrData->found = false;
+
         QRCodeDetector qrDetector;
         Mat bbox;
 
         if(qrDetector.detect(img, bbox)){
             if(bbox.cols==4){
-                qrData->bbox = &bbox;
+                qrData->id = shm.data->id;
                 qrData->height = shm.data->height;
                 qrData->found = true;
+                for(int i=0; i<4;i++){
+                    qrData->points[i] = Point(bbox.at<float>(2*i), bbox.at<float>(2*i +1));
+                }
             }
         }
     }
-    static void findQr2(QRData* qrData, VideoData* videoData){
-        cv::Mat img(videoData->height, videoData->width, CV_8UC1, videoData->image);
+    static void findQrFromQueue(QRData* qrData, VideoData* videoData){
+        cv::Mat img(videoData->height, videoData->width, videoData->type, videoData->image);
         qrData->id = videoData->id;
+
+        qrData->found = false;
+
         QRCodeDetector qrDetector;
         Mat bbox;
+
         if(qrDetector.detect(img, bbox)){
             if(bbox.cols==4){
-                qrData->bbox = &bbox;
+                qrData->id = videoData->id;
                 qrData->height = videoData->height;
                 qrData->found = true;
+                for(int i=0; i<4;i++){
+                    qrData->points[i] = Point(bbox.at<float>(2*i), bbox.at<float>(2*i +1));
+                }
             }
         }
+
     }
     static void sendPosition(SharedMemoryGame & shm, GameData* gameData){
         memcpy(shm.data, gameData, sizeof(GameData));
     }
     static double getPercent(QRData * data){
+        if(data == nullptr){
+            return 0.0;
+        }
         int max_y=0, min_y=data->height;
-        Point points[4];
-        for(int i=0; i<4;i++){
-            points[i] = Point(data->bbox->at<float>(2*i), data->bbox->at<float>(2*i +1));
-            max_y = points[i].y>max_y?points[i].y:max_y;
-            std::cout<<max_y<<'\n';
-            min_y = points[i].y<min_y?points[i].y:min_y;
-            std::cout<<min_y<<'\n';
+        for(auto & point : data->points){
+            max_y = std::max(max_y, point.y);
+            max_y = std::min( max_y, data->height);
+            min_y = std::min(min_y, point.y);
+            min_y = std::max(min_y,0);
         }
         int lower_bound = (max_y - min_y)/2;
         int upper_bound = data->height- (max_y -min_y)/2;
@@ -102,6 +122,5 @@ private:
         return  (middle-lower_bound)/(double)(upper_bound-lower_bound);
     }
 };
-
 
 #endif //QRGAME_QRREADER_H

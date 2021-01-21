@@ -1,9 +1,6 @@
-//
-// Created by asia on 19.01.2021.
-//
-
 #include <cstring>
 #include "SharedQueueVideo.h"
+
 SharedQueueVideo::SharedQueueVideo(bool write, bool non_block, long msgNum){
     auto flags = write?(non_block?O_WRONLY|O_NONBLOCK:O_WRONLY):(non_block?O_RDONLY|O_NONBLOCK:O_RDONLY);
 

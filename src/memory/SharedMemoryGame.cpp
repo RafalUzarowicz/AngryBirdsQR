@@ -15,16 +15,16 @@ SharedMemoryGame::SharedMemoryGame(){
     struct stat mem_stat{};
     fstat(sh_memory, &mem_stat);
     size = mem_stat.st_size;
+
     data = static_cast<GameData *>(mmap(nullptr, size, PROT_WRITE | PROT_READ, MAP_SHARED,sh_memory, 0));
+
     errno = 0;
     if((this->producer = sem_open(SEM_GAME_PROD, 0))==SEM_FAILED){
-        std::cout<<strerror(errno)<<"a\n";
-        exit(0);
+        std::cerr<<strerror(errno)<<"\n";
+        exit(1);
     }
     if((this->consumer = sem_open(SEM_GAME_CONS, 0))==SEM_FAILED){
-        std::cout<<strerror(errno)<<"b\n";
-    }
-    if(errno != 0){
-        exit(-1);
+        std::cerr<<strerror(errno)<<"\n";
+        exit(1);
     }
 }

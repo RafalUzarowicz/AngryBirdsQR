@@ -1,9 +1,7 @@
 #ifndef QRGAME_SHAREDMEMORYGAME_H
 #define QRGAME_SHAREDMEMORYGAME_H
-#include <chrono>
 #include <semaphore.h>
 #include <cstdint>
-#include <chrono>
 #include <semaphore.h>
 #include "../Util.h"
 #include <sys/mman.h>
