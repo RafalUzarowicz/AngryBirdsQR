@@ -62,16 +62,20 @@ public:
 //            this->videoQueueImageTypeMenu();
 //            this->videoQueueQrTypeMenu();
 //        }
-//        this->qrToGameMenu();
-//        if(qrToGame == QUEUE){
-//            this->gameQueueQrTypeMenu();
-//            this->gameQueueGameTypeMenu();
-//        }
-        QRGame::initializeWindow();
+        this->qrToGameMenu();
+        if(qrToGame == QUEUE){
+            this->gameQueueQrTypeMenu();
+            this->gameQueueGameTypeMenu();
+        }
         QRGame::setup();
+
         this->createChildren();
+#ifdef NCURSES_INCLUDED
+        QRGame::initializeWindow();
+#endif
         this->runChildren();
         this->sched();
+
         int status;
         while(command != InputManager::QUIT){
             // Update input
@@ -99,8 +103,7 @@ private:
     }
 
     static void initializeWindow(){
-        WINDOW * mainwin;
-        if ( (mainwin = initscr()) == nullptr ) {
+        if ( initscr() == nullptr ) {
             exit(EXIT_FAILURE);
         }
         raw();
@@ -174,23 +177,22 @@ private:
 
     static void setup(){
         QRGame::unlink();
-        sem_t* tempSem;
-        if((tempSem = sem_open(SEM_VIDEO_PROD, O_CREAT, 0660, 1)) == SEM_FAILED){
+        if(sem_open(SEM_VIDEO_PROD, O_CREAT, 0660, 1) == SEM_FAILED){
             std::cerr<<strerror(errno)<<"\n";
             unlink();
             exit(1);
         }
-        if((tempSem = sem_open(SEM_VIDEO_CONS, O_CREAT, 0660, 0)) == SEM_FAILED){
+        if(sem_open(SEM_VIDEO_CONS, O_CREAT, 0660, 0) == SEM_FAILED){
             std::cerr<<strerror(errno)<<"\n";
             unlink();
             exit(1);
         }
-        if((tempSem = sem_open(SEM_GAME_PROD, O_CREAT, 0660, 1)) == SEM_FAILED){
+        if(sem_open(SEM_GAME_PROD, O_CREAT, 0660, 1) == SEM_FAILED){
             std::cerr<<strerror(errno)<<"\n";
             unlink();
             exit(1);
         }
-        if((tempSem = sem_open(SEM_GAME_CONS, O_CREAT, 0660, 0)) == SEM_FAILED){
+        if(sem_open(SEM_GAME_CONS, O_CREAT, 0660, 0) == SEM_FAILED){
             std::cerr<<strerror(errno)<<"\n";
             unlink();
             exit(1);
@@ -199,13 +201,13 @@ private:
         int gameDataSize = sizeof(GameData);
         int videoDataSize = sizeof(VideoData);
 
-        mqd_t queue;
 
         mq_attr gameAttr{};
         gameAttr.mq_maxmsg = 1;
         gameAttr.mq_msgsize = gameDataSize;
-        if((queue = mq_open(GAME_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, gameAttr)) == (mqd_t) -1){
+        if(mq_open(GAME_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, gameAttr) == (mqd_t) -1){
             std::cerr<<strerror(errno)<<"\n";
+            std::cout<<strerror(errno)<<"\n";
             unlink();
             exit(1);
         }
@@ -213,8 +215,9 @@ private:
         mq_attr videoAttr{};
         videoAttr.mq_maxmsg = 1;
         videoAttr.mq_msgsize = videoDataSize;
-        if((queue = mq_open(VIDEO_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, videoAttr)) == (mqd_t) -1){
+        if(mq_open(VIDEO_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, videoAttr) == (mqd_t) -1){
             std::cerr<<strerror(errno)<<"\n";
+            std::cout<<strerror(errno)<<"\n";
             unlink();
             exit(1);
         }

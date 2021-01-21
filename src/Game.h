@@ -43,7 +43,9 @@ public:
     }
 
     void run() override{
+#ifdef NCURSES_INCLUDED
         window->initialize();
+#endif
         game->initialize(window->getHeight(), window->getWidth());
 
         double lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -56,15 +58,15 @@ public:
             // Measure time
             nowTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
             deltaTime = nowTime - lastTime;
-
+#ifdef NCURSES_INCLUDED
             // Check resize
             window->resize();
+#endif
             // Read input
             if(communicationType == SHARED_MEMORY){
                 sharedMemory.getData(readData, sharedMemory, &data);
             }else{
-                // TODO  queue
-
+                sharedQueue.receiveMsg(&data);
             }
             // Process input
             if(std::abs(movement - data.percentage) > maxStep){
@@ -85,12 +87,12 @@ public:
             }else{
                 game->update(movement, window->getHeight(), window->getWidth(), deltaTime / 1000.0);
             }
-
+#ifdef NCURSES_INCLUDED
             // Clear screen
             Window::clear();
             // Draw
             window->draw();
-
+#endif
             lastTime = nowTime;
         }
     }

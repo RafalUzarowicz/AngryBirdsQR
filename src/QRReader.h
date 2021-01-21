@@ -13,25 +13,23 @@
 #include "memory/SharedMemoryVideo.h"
 using namespace cv;
 
-struct QRData{
-    int id{};
-    int height{};
-    bool found = false;
-    Point points[4];
-    std::chrono::system_clock::time_point timestamp{};
-};
-
 class QRReader: public IProcess {
 private:
+    struct QRData{
+        int id{};
+        int height{};
+        bool found = false;
+        Point points[4];
+        std::chrono::system_clock::time_point timestamp{};
+    };
+
     SharedMemoryVideo mem_video;
     SharedMemoryGame mem_game;
     SharedQueueVideo mq_video;
     SharedQueueGame mq_game;
     CommunicationType commsTypeImageToQr;
     CommunicationType commsTypeQrToGame;
-//
-//    static QRCodeDetector qrDetector;
-//    static Mat bbox;
+
 public:
     QRReader(CommunicationType commsTypeImageToQr, CommunicationType commsTypeQrToGame, bool isQueueBlockingVideo = false, bool isQueueBlockingGame = false) : commsTypeImageToQr(commsTypeImageToQr), commsTypeQrToGame(commsTypeQrToGame), mq_video(false, isQueueBlockingVideo), mq_game(true, isQueueBlockingGame){
     }
@@ -67,8 +65,8 @@ private:
 
         qrData->found = false;
 
-        QRCodeDetector qrDetector;
-        Mat bbox;
+        static QRCodeDetector qrDetector;
+        static Mat bbox;
 
         if(qrDetector.detect(img, bbox)){
             if(bbox.cols==4){
@@ -87,8 +85,8 @@ private:
 
         qrData->found = false;
 
-        QRCodeDetector qrDetector;
-        Mat bbox;
+        static QRCodeDetector qrDetector;
+        static Mat bbox;
 
         if(qrDetector.detect(img, bbox)){
             if(bbox.cols==4){

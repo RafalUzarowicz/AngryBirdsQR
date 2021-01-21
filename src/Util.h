@@ -1,6 +1,8 @@
 #ifndef QRGAME_UTIL_H
 #define QRGAME_UTIL_H
 
+//#define NCURSES_INCLUDED
+
 #include <chrono>
 
 const static int MAX_WIDTH = 1920;

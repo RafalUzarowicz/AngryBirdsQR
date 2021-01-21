@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Player.h"
 #include "Logic.h"
+#include "../Util.h"
 
 class Window {
 private:
@@ -63,7 +64,9 @@ private:
     Logic* game;
 public:
     explicit Window(Logic* game) : game(game){
-        //resize();
+#ifdef NCURSES_INCLUDED
+//        resize();
+#endif
     }
 
     void initialize(){
