@@ -1,12 +1,13 @@
 #ifndef QRGAME_IMAGEFACTORY_H
 #define QRGAME_IMAGEFACTORY_H
 
-#include <thread>
-#include "IProcess.h"
-#include "image/CameraHandler.h"
 #include "memory/SharedMemoryVideo.h"
+#include "image/CameraHandler.h"
 #include "memory/SharedQueueVideo.h"
+#include "IProcess.h"
 #include "Util.h"
+
+#include <thread>
 
 class ImageFactory: public IProcess {
 private:

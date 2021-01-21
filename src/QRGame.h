@@ -2,7 +2,11 @@
 #define QRGAME_QRGAME_H
 
 #include "QRReader.h"
+#include "ImageFactory.h"
+#include "IProcess.h"
 #include "Game.h"
+#include "Util.h"
+
 #include <unistd.h>
 #include <csignal>
 #include <sys/types.h>
@@ -12,9 +16,6 @@
 #include <fcntl.h>
 #include <mqueue.h>
 #include <sys/mman.h>
-#include "IProcess.h"
-#include "Util.h"
-#include "ImageFactory.h"
 
 class QRGame: public IProcess {
 private:
