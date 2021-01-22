@@ -3,10 +3,10 @@ project(QRGame)
 
 set(CMAKE_CXX_STANDARD 14)
 
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-find_package( Curses REQUIRED )
-include_directories( ${CURSES_INCLUDE_DIR} )
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+find_package(Curses REQUIRED)
+include_directories(${CURSES_INCLUDE_DIR})
 
 add_executable(QRGame
         main.cpp

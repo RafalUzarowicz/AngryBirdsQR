@@ -8,7 +8,7 @@ cmake CMakeLists.txt
 
 make
 
-./QRGame
+sudo ./QRGame
 
 rm CMakeCache.txt
 rm Makefile

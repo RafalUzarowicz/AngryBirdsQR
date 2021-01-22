@@ -16,94 +16,130 @@
 #include <fcntl.h>
 #include <mqueue.h>
 #include <sys/mman.h>
+#include <ctime>
+#include <sys/resource.h>
 
-class QRGame: public IProcess {
+class QRGame : public IProcess {
 private:
-    enum SchedulerMode : int {DEFAULT = SCHED_OTHER, FIFO = SCHED_FIFO, RR = SCHED_RR};
+    enum SchedulerMode : int {
+        DEFAULT = SCHED_OTHER, FIFO = SCHED_FIFO, RR = SCHED_RR
+    };
 
     SchedulerMode schedMode = SchedulerMode::DEFAULT;
 
     CommunicationType imageToQr = SHARED_MEMORY;
+
     CommunicationType qrToGame = SHARED_MEMORY;
 
     bool blockQueueVideoImage = false;
+
     bool blockQueueVideoQr = false;
+
     bool blockQueueGameQr = false;
+
     bool blockQueueGameGame = false;
 
     bool coreLimit = false;
 
     InputManager::Command command;
-    InputManager* inputManager;
-    Game* game;
-    ImageFactory* imageFactory;
-    QRReader* qrReader;
+    InputManager *inputManager;
+    Game *game;
+    ImageFactory *imageFactory;
+    QRReader *qrReader;
     pid_t game_proc = 0, image_proc = 0, qr_proc = 0;
+    int affinity = 1;
+
+#ifdef DONT_USE_PROCESSES // DONT DELETE AND DONT COMMENT THIS ONE
+    static const int MAX_ITERATIONS = 100;
+#endif // DONT DELETE AND DONT COMMENT THIS ONE
 public:
-    QRGame(){
+    QRGame() {
         command = InputManager::NONE;
         inputManager = new InputManager();
         game = nullptr;
         imageFactory = nullptr;
         qrReader = nullptr;
     }
-    ~QRGame(){
+
+    ~QRGame() {
         this->end();
         delete imageFactory;
         delete game;
         delete qrReader;
         delete inputManager;
     }
-    void run() override{
-//        this->schedMenu();
-//        this->coresMenu();
-//        this->imagesToQrMenu();
-//        if(imageToQr == QUEUE){
-//            this->videoQueueImageTypeMenu();
-//            this->videoQueueQrTypeMenu();
-//        }
+
+    void run() override {
+#ifdef MENUS_ENABLED // DONT DELETE AND DONT COMMENT THIS ONE
+
+#ifdef SCHED_MENU_ENABLED // DONT DELETE AND DONT COMMENT THIS ONE
+        this->schedMenu();
+#endif // DONT DELETE AND DONT COMMENT THIS ONE
+#ifdef CORE_MENU_ENABLED // DONT DELETE AND DONT COMMENT THIS ONE
+        this->coresMenu();
+#endif // DONT DELETE AND DONT COMMENT THIS ONE
+#ifdef IMAGE_QR_MENU_ENABLED // DONT DELETE AND DONT COMMENT THIS ONE
+        this->imagesToQrMenu();
+        if (imageToQr == QUEUE) {
+            this->videoQueueImageTypeMenu();
+            this->videoQueueQrTypeMenu();
+        }
+#endif // DONT DELETE AND DONT COMMENT THIS ONE
+#ifdef QR_GAME_MENU_ENABLED // DONT DELETE AND DONT COMMENT THIS ONE
         this->qrToGameMenu();
-        if(qrToGame == QUEUE){
+        if (qrToGame == QUEUE) {
             this->gameQueueQrTypeMenu();
             this->gameQueueGameTypeMenu();
         }
-        QRGame::setup();
+#endif // DONT DELETE AND DONT COMMENT THIS ONE
 
+#endif // DONT DELETE AND DONT COMMENT THIS ONE
+
+        QRGame::setup();
         this->createChildren();
-#ifdef NCURSES_INCLUDED
+
+#ifndef DONT_USE_PROCESSES // DONT DELETE AND DONT COMMENT THIS ONE
+
+#ifdef NCURSES_INCLUDED // DONT DELETE AND DONT COMMENT THIS ONE
         QRGame::initializeWindow();
-#endif
+#endif // DONT DELETE AND DONT COMMENT THIS ONE
+
         this->runChildren();
         this->sched();
-
         int status;
-        while(command != InputManager::QUIT){
+        while (command != InputManager::QUIT) {
             // Update input
             inputManager->update();
             // Process input
             command = inputManager->getCommand();
             // Check if children are alive
-            if(waitpid(0, &status, WNOHANG) != 0){
+            if (waitpid(0, &status, WNOHANG) != 0) {
                 break;
             }
         }
+#else // DONT DELETE AND DONT COMMENT THIS ONE
+        for(int i = 0; i < MAX_ITERATIONS; ++i){
+            imageFactory->run();
+            qrReader->run();
+            game->run();
+        }
+#endif // DONT DELETE AND DONT COMMENT THIS ONE
     }
 
 
-
 private:
-    static pid_t runProcess(IProcess* process){
+    static pid_t runProcess(IProcess *process) {
         pid_t result = fork();
         if (result == 0) {
             process->run();
             exit(0);
-        }else{
+        } else {
             return result;
         }
     }
 
-    static void initializeWindow(){
-        if ( initscr() == nullptr ) {
+    static void initializeWindow() {
+        if (initscr() == nullptr) {
             exit(EXIT_FAILURE);
         }
         raw();
@@ -113,61 +149,72 @@ private:
         noecho();
     }
 
-    void createChildren(){
+    void createChildren() {
         imageFactory = new ImageFactory(imageToQr, blockQueueVideoImage);
         qrReader = new QRReader(imageToQr, qrToGame, blockQueueVideoQr, blockQueueGameQr);
         game = new Game(qrToGame, blockQueueGameGame);
     }
 
-    void runChildren(){
+    void runChildren() {
         image_proc = runProcess(imageFactory);
         qr_proc = runProcess(qrReader);
         game_proc = runProcess(game);
     }
 
-    void sched(){
+    void sched() {
         sched_param params{};
-        if(schedMode == DEFAULT){
+        if (schedMode == DEFAULT) {
             params.sched_priority = 0;
-        }else{
+        } else if (schedMode == FIFO) {
+            params.sched_priority = 99;
+        } else if (schedMode == RR) {
             params.sched_priority = 99;
         }
         int result = 0;
 
-        result |= sched_setscheduler(game_proc, schedMode, &params);
-        result |= sched_setscheduler(image_proc, schedMode, &params);
-        result |= sched_setscheduler(qr_proc, schedMode, &params);
+        int policy = schedMode;
 
-        if (result)
-        {
+        result |= sched_setscheduler(game_proc, policy, &params);
+        result |= sched_setscheduler(image_proc, policy, &params);
+        result |= sched_setscheduler(qr_proc, policy, &params);
+
+        if (result) {
             std::cout << strerror(errno) << '\n';
             this->end();
             exit(1);
         }
 
 
-        if (coreLimit)
-        {
+        if (coreLimit) {
+            // FIXME to nie dziala
             result = 0;
-            cpu_set_t cpuSet;
+            cpu_set_t set;
 
-            CPU_ZERO(&cpuSet);
-            CPU_SET(3, &cpuSet);
+            CPU_ZERO(&set);
+            CPU_SET(affinity, &set);
 
-            result |= sched_setaffinity(game_proc, sizeof(cpu_set_t), &cpuSet);
+            result = sched_setaffinity(game_proc, sizeof(set), &set);
+            if (result < 0) {
+                std::cout << strerror(errno) << '\n';
+                this->end();
+                exit(1);
+            }
 
-            CPU_ZERO(&cpuSet);
-            CPU_SET(3, &cpuSet);
+            CPU_ZERO(&set);
+            CPU_SET(affinity, &set);
 
-            result |= sched_setaffinity(image_proc, sizeof(cpu_set_t), &cpuSet);
+            result = sched_setaffinity(image_proc, sizeof(set), &set);
+            if (result < 0) {
+                std::cout << strerror(errno) << '\n';
+                this->end();
+                exit(1);
+            }
 
-            CPU_ZERO(&cpuSet);
-            CPU_SET(3, &cpuSet);
+            CPU_ZERO(&set);
+            CPU_SET(affinity, &set);
 
-            result |= sched_setaffinity(qr_proc, sizeof(cpu_set_t), &cpuSet);
-
-            if (result)
-            {
+            result = sched_setaffinity(qr_proc, sizeof(set), &set);
+            if (result < 0) {
                 std::cout << strerror(errno) << '\n';
                 this->end();
                 exit(1);
@@ -175,70 +222,68 @@ private:
         }
     }
 
-    static void setup(){
+    static void setup() {
         QRGame::unlink();
-        if(sem_open(SEM_VIDEO_PROD, O_CREAT, 0660, 1) == SEM_FAILED){
-            std::cerr<<strerror(errno)<<"\n";
+        if (sem_open(SEM_VIDEO_PROD, O_CREAT, 0660, 1) == SEM_FAILED) {
+            std::cerr << strerror(errno) << "\n";
             unlink();
             exit(1);
         }
-        if(sem_open(SEM_VIDEO_CONS, O_CREAT, 0660, 0) == SEM_FAILED){
-            std::cerr<<strerror(errno)<<"\n";
+        if (sem_open(SEM_VIDEO_CONS, O_CREAT, 0660, 0) == SEM_FAILED) {
+            std::cerr << strerror(errno) << "\n";
             unlink();
             exit(1);
         }
-        if(sem_open(SEM_GAME_PROD, O_CREAT, 0660, 1) == SEM_FAILED){
-            std::cerr<<strerror(errno)<<"\n";
+        if (sem_open(SEM_GAME_PROD, O_CREAT, 0660, 1) == SEM_FAILED) {
+            std::cerr << strerror(errno) << "\n";
             unlink();
             exit(1);
         }
-        if(sem_open(SEM_GAME_CONS, O_CREAT, 0660, 0) == SEM_FAILED){
-            std::cerr<<strerror(errno)<<"\n";
+        if (sem_open(SEM_GAME_CONS, O_CREAT, 0660, 0) == SEM_FAILED) {
+            std::cerr << strerror(errno) << "\n";
             unlink();
             exit(1);
         }
 
-        int gameDataSize = sizeof(GameData);
-        int videoDataSize = sizeof(VideoData);
-
+        int gameDataSize = sizeof(GameData) + 1;
+        int videoDataSize = sizeof(VideoData) + 1;
 
         mq_attr gameAttr{};
         gameAttr.mq_maxmsg = 1;
         gameAttr.mq_msgsize = gameDataSize;
-        if(mq_open(GAME_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, gameAttr) == (mqd_t) -1){
-            std::cerr<<strerror(errno)<<"\n";
-            std::cout<<strerror(errno)<<"\n";
+        gameAttr.mq_curmsgs = 0;
+        if (mq_open(GAME_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, &gameAttr) == (mqd_t) -1) {
+            std::cerr << strerror(errno) << "\n";
             unlink();
             exit(1);
         }
-
         mq_attr videoAttr{};
-        videoAttr.mq_maxmsg = 1;
-        videoAttr.mq_msgsize = videoDataSize;
-        if(mq_open(VIDEO_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, videoAttr) == (mqd_t) -1){
-            std::cerr<<strerror(errno)<<"\n";
-            std::cout<<strerror(errno)<<"\n";
+        videoAttr.mq_maxmsg = 10;
+        videoAttr.mq_msgsize = MAX_QUEUE_MESS_SIZE;
+        videoAttr.mq_curmsgs = 0;
+        if (mq_open(VIDEO_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, &videoAttr) == (mqd_t) -1) {
+            std::cerr << strerror(errno) << "\n";
             unlink();
             exit(1);
         }
 
         int gameSgmFd = shm_open(GAME_MEM_NAME, O_CREAT | O_RDWR, 0660);
-        if(gameSgmFd < 0){
-            std::cerr<<strerror(errno)<<"\n";
+        if (gameSgmFd < 0) {
+            std::cerr << strerror(errno) << "\n";
             unlink();
             exit(1);
         }
         ftruncate(gameSgmFd, gameDataSize);
         int videoSgmFd = shm_open(VIDEO_MEM_NAME, O_CREAT | O_RDWR, 0660);
-        if(videoSgmFd < 0){
-            std::cerr<<strerror(errno)<<"\n";
+        if (videoSgmFd < 0) {
+            std::cerr << strerror(errno) << "\n";
             unlink();
             exit(1);
         }
         ftruncate(videoSgmFd, videoDataSize);
     }
 
-    static void unlink(){
+    static void unlink() {
         mq_unlink(GAME_MQ);
         mq_unlink(VIDEO_MQ);
         sem_unlink(SEM_VIDEO_PROD);
@@ -249,14 +294,14 @@ private:
         shm_unlink(VIDEO_MEM_NAME);
     }
 
-    void killChildren() const{
-        if(image_proc != 0){
+    void killChildren() const {
+        if (image_proc != 0) {
             kill(image_proc, SIGTERM);
         }
-        if(qr_proc != 0){
+        if (qr_proc != 0) {
             kill(qr_proc, SIGTERM);
         }
-        if(game_proc != 0){
+        if (game_proc != 0) {
             kill(game_proc, SIGTERM);
         }
     }
@@ -267,7 +312,7 @@ private:
         QRGame::unlink();
     }
 
-    void schedMenu(){
+    void schedMenu() {
         char c;
         do {
             std::cout << "q - Quit\n";
@@ -295,7 +340,19 @@ private:
         exit(0);
     }
 
-    void coresMenu(){
+    void coresMenu() {
+        // FIXME to jest zdobywanie affinity ale nic nie daje :( albo nie wiem ze daje
+//        cpu_set_t mask;
+//        if (sched_getaffinity(0, sizeof(cpu_set_t), &mask) == -1) {
+//            std::cerr<<strerror(errno)<<'\n';
+//            exit(1);
+//        }
+//        long nproc = sysconf(_SC_NPROCESSORS_ONLN);
+//        int affinities[nproc];
+//        for (int i = 0; i < nproc; i++) {
+//            affinities[i] = CPU_ISSET(i, &mask);
+//        }
+
         char c;
         do {
             std::cout << "q - Quit\n";
@@ -304,13 +361,14 @@ private:
             std::cout << "Select core limit: ";
 
             std::cin >> c;
+            affinity = 1;
 
             switch (c) {
                 case '1':
                     coreLimit = false;
                     return;
                 case '2':
-                    // TODO: zmienic na true i ogarnac te cpu
+                    // FIXME zmienic na true i ogarnac te cpu
                     coreLimit = false;
                     return;
                 default:
@@ -322,7 +380,7 @@ private:
         exit(0);
     }
 
-    void imagesToQrMenu(){
+    void imagesToQrMenu() {
         char c;
         do {
             std::cout << "q - Quit\n";
@@ -348,7 +406,7 @@ private:
         exit(0);
     }
 
-    void videoQueueImageTypeMenu(){
+    void videoQueueImageTypeMenu() {
         char c;
         do {
             std::cout << "q - Quit\n";
@@ -374,7 +432,7 @@ private:
         exit(0);
     }
 
-    void videoQueueQrTypeMenu(){
+    void videoQueueQrTypeMenu() {
         char c;
         do {
             std::cout << "q - Quit\n";
@@ -400,7 +458,7 @@ private:
         exit(0);
     }
 
-    void qrToGameMenu(){
+    void qrToGameMenu() {
         char c;
         do {
             std::cout << "q - Quit\n";
@@ -426,7 +484,7 @@ private:
         exit(0);
     }
 
-    void gameQueueQrTypeMenu(){
+    void gameQueueQrTypeMenu() {
         char c;
         do {
             std::cout << "q - Quit\n";
@@ -452,7 +510,7 @@ private:
         exit(0);
     }
 
-    void gameQueueGameTypeMenu(){
+    void gameQueueGameTypeMenu() {
         char c;
         do {
             std::cout << "q - Quit\n";

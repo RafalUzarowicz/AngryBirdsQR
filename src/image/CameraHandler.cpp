@@ -30,13 +30,15 @@
 
 using namespace std;
 
+// FIXME To juz jest potrzebne w obecnej wersji ale moze do czegos bedziecie potrzebowac to nie usuwam
+
 
 CameraHandler::CameraHandler() {
 
-    
+
     // step1
     this->fd = open("/dev/video0", O_RDWR);
-    
+
     if (this->fd < 0) {
 
         perror("Unable to open device /dev/video0, OPEN");
@@ -90,7 +92,7 @@ void CameraHandler::specifyFormat() {
 }
 
 void CameraHandler::requestDeviceBuffer() {
-    
+
     // step 4
     struct v4l2_requestbuffers req;
     req.count = 1; // the only request for the buffer
@@ -109,7 +111,7 @@ void CameraHandler::queryDeviceBuffer() {
     // step 5
     struct v4l2_buffer queryBuff;
     memset(&queryBuff, 0, sizeof(queryBuff)); // cleaning the garbage
-    
+
     queryBuff.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     queryBuff.memory = V4L2_MEMORY_MMAP;
     queryBuff.index = 0;
@@ -120,7 +122,8 @@ void CameraHandler::queryDeviceBuffer() {
         exit(1);
     }
 
-    this->buffer = (unsigned char *) mmap(nullptr, queryBuff.length, PROT_READ | PROT_WRITE, MAP_SHARED, fd, queryBuff.m.offset);
+    this->buffer = (unsigned char *) mmap(nullptr, queryBuff.length, PROT_READ | PROT_WRITE, MAP_SHARED, fd,
+                                          queryBuff.m.offset);
 
     if (this->buffer == MAP_FAILED) {
         perror("mmap");
@@ -191,10 +194,10 @@ void CameraHandler::captureFrame() {
 
     write(jpgfile, this->buffer, bufferinfo.length);
     VideoData vd;
-    std::cout<<sizeof(VideoData::image)<<'\n';
+    std::cout << sizeof(VideoData::image) << '\n';
     lseek(jpgfile, 0, SEEK_SET);
     int r = read(jpgfile, vd.image, sizeof(VideoData::image));
-    std::cout<<r<<'\n';
+    std::cout << r << '\n';
     close(jpgfile);
 
     cv::Mat frame;
@@ -232,7 +235,7 @@ CameraHandler::~CameraHandler() {
 }
 
 
-void CameraHandler::ConvertYUVtoRGB(int y, int u, int v, unsigned char* buff) {
+void CameraHandler::ConvertYUVtoRGB(int y, int u, int v, unsigned char *buff) {
 
     int R = static_cast<int>(y + 1.14 * u);
     int G = static_cast<int>(y - 0.395 * u - 0.581 * v);

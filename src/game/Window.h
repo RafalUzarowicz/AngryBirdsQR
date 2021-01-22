@@ -1,26 +1,27 @@
 #ifndef QRGAME_WINDOW_H
 #define QRGAME_WINDOW_H
 
-#include <ncurses.h>
-#include <iostream>
 #include "Player.h"
 #include "Logic.h"
 #include "../Util.h"
 
+#include <iostream>
+#include <ncurses.h>
+
 class Window {
 private:
-    void drawUI(){
+    void drawUI() {
         Window::drawScoreMessage(game->getScore());
         this->drawBorder();
     }
 
-    void drawBorder() const{
-        for(int i = 0; i < width; ++i){
-            mvaddch(0,i,VERTICAL_BORDER);
+    void drawBorder() const {
+        for (int i = 0; i < width; ++i) {
+            mvaddch(0, i, VERTICAL_BORDER);
             mvaddch(height - 1, i, VERTICAL_BORDER);
         }
-        for(int i = 0; i < height; ++i){
-            mvaddch(i,0,HORIZONTAL_BORDER);
+        for (int i = 0; i < height; ++i) {
+            mvaddch(i, 0, HORIZONTAL_BORDER);
             mvaddch(i, width - 1, HORIZONTAL_BORDER);
         }
         mvaddch(0, 0, CORNER);
@@ -29,23 +30,24 @@ private:
         mvaddch(height - 1, width - 1, CORNER);
     }
 
-    static void drawScoreMessage(int score){
+    static void drawScoreMessage(int score) {
         mvprintw(2, 3, "Score: %d", score);
     }
 
-    void drawPlayer(){
-        for( int i = 0; i < game->getPlayer().getSprite().sprite.size(); ++i ){
-            mvprintw((game->getPlayer().getY()+i) % height, game->getPlayer().getX() % width, game->getPlayer().getSprite().sprite[i].c_str());
+    void drawPlayer() {
+        for (int i = 0; i < game->getPlayer().getSprite().sprite.size(); ++i) {
+            mvprintw((game->getPlayer().getY() + i) % height, game->getPlayer().getX() % width,
+                     game->getPlayer().getSprite().sprite[i].c_str());
         }
     }
 
-    void drawWalls(){
-        for( auto wall : game->getWalls() ){
-            if(wall.getX() < width){
-                for( int i = 0; i < wall.getWidth(); ++i){
-                    int gap = height*wall.getHeight();
-                    mvvline(0, wall.getX()+i, WALL, gap);
-                    mvvline(gap + wall.getGapHeight() , wall.getX()+i, WALL, height - gap - wall.getGapHeight());
+    void drawWalls() {
+        for (auto wall : game->getWalls()) {
+            if (wall.getX() < width) {
+                for (int i = 0; i < wall.getWidth(); ++i) {
+                    int gap = height * wall.getHeight();
+                    mvvline(0, wall.getX() + i, WALL, gap);
+                    mvvline(gap + wall.getGapHeight(), wall.getX() + i, WALL, height - gap - wall.getGapHeight());
                 }
             }
         }
@@ -61,51 +63,50 @@ private:
 
     int height{}, width{};
 
-    Logic* game;
+    Logic *game;
 public:
-    explicit Window(Logic* game) : game(game){
-#ifdef NCURSES_INCLUDED
-//        resize();
-#endif
+    explicit Window(Logic *game) : game(game) {
+#ifdef NCURSES_INCLUDED  // DONT DELETE AND DONT COMMENT THIS ONE
+        //        resize();
+#endif  // DONT DELETE AND DONT COMMENT THIS ONE
     }
 
-    void initialize(){
+    void initialize() {
         this->resize();
         Window::clear();
     }
 
-    void resize(){
+    void resize() {
         int h, w;
-        getmaxyx( stdscr, h, w );
-        if( h < MIN_HEIGHT || w < MIN_WIDTH ){
+        getmaxyx(stdscr, h, w);
+        if (h < MIN_HEIGHT || w < MIN_WIDTH) {
             endwin();
-            throw std::invalid_argument( "Window is too small." );
-        }else if( h != this->height || w != this->width ){
-           this->height = h;
-           this->width = w;
-           this->game->initialize(h, w);
+            throw std::invalid_argument("Window is too small.");
+        } else if (h != this->height || w != this->width) {
+            this->height = h;
+            this->width = w;
+            this->game->initialize(h, w);
         }
     }
 
-    void draw(){
+    void draw() {
         this->drawWalls();
         this->drawPlayer();
         this->drawUI();
         refresh();
     }
 
-    static void clear(){
+    static void clear() {
         ::erase();
     }
 
-    int getHeight() const{
+    int getHeight() const {
         return height;
     }
 
-    int getWidth() const{
+    int getWidth() const {
         return width;
     }
 };
-
 
 #endif //QRGAME_WINDOW_H

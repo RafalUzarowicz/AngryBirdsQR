@@ -1,8 +1,5 @@
-
-
 #ifndef QRGAME_WALL_H
 #define QRGAME_WALL_H
-
 
 class Wall {
 private:
@@ -13,9 +10,10 @@ private:
     bool counted = false;
 
 public:
-    Wall(double height = 0.0, int width = 3, int gapHeight = 9) : height(height), width(width), gapHeight(gapHeight){
+    Wall(double height = 0.0, int width = 3, int gapHeight = 9) : height(height), width(width), gapHeight(gapHeight) {
 
     }
+
     double getX() const {
         return x;
     }

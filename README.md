@@ -1,2 +1,3 @@
 # QRGame
+
 SCZR

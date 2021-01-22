@@ -1,59 +1,70 @@
 #include <linux/videodev2.h>
 #include <vector>
 
+// FIXME To juz jest potrzebne w obecnej wersji ale moze do czegos bedziecie potrzebowac to nie usuwam
+
 class CameraHandler {
 
-    public:
+public:
 
-        CameraHandler();
-        ~CameraHandler();
+    CameraHandler();
 
-        void askDevice();
-        void specifyFormat();
-        void requestDeviceBuffer();
-        void queryDeviceBuffer();
+    ~CameraHandler();
 
-        void startStreaming();
-        void stopStreaming();
+    void askDevice();
 
-        void captureFrame();
+    void specifyFormat();
 
-        // IplImage * getOpenCVImage();
+    void requestDeviceBuffer();
 
-        void configure();
+    void queryDeviceBuffer();
 
-        void getFrame();
+    void startStreaming();
 
-        void setWidth(int width);
-        void setHeight(int height);
-        void setFilename(std::string filename);
-        void setFrameDelay(int delay);
+    void stopStreaming();
 
-        int getWidth();
-        int getHeight();
+    void captureFrame();
 
-        void ConvertYUVtoRGB(int y, int u, int v, unsigned char* buff);
+    // IplImage * getOpenCVImage();
 
-    private:
+    void configure();
 
-        int fd;
-        int imageWidth;
-        int imageHeight;
+    void getFrame();
 
-        int frameDelay;
+    void setWidth(int width);
+
+    void setHeight(int height);
+
+    void setFilename(std::string filename);
+
+    void setFrameDelay(int delay);
+
+    int getWidth();
+
+    int getHeight();
+
+    void ConvertYUVtoRGB(int y, int u, int v, unsigned char *buff);
+
+private:
+
+    int fd;
+    int imageWidth;
+    int imageHeight;
+
+    int frameDelay;
 public:
     int getFrameDelay() const;
 
 private:
     std::string filename;
 
-        struct v4l2_buffer infoBuffer{};
-        unsigned char * buffer {nullptr};
+    struct v4l2_buffer infoBuffer{};
+    unsigned char *buffer{nullptr};
 public:
     unsigned char *getBuffer() const;
 
 private:
 
     std::vector<unsigned char> externalBuffer;
-        
+
 };

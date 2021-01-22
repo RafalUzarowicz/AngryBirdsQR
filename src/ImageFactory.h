@@ -9,7 +9,7 @@
 
 #include <thread>
 
-class ImageFactory: public IProcess {
+class ImageFactory : public IProcess {
 private:
     SharedMemoryVideo sharedMemory;
     SharedQueueVideo sharedQueue;
@@ -18,18 +18,22 @@ private:
 
 public:
 
-    explicit ImageFactory(CommunicationType communicationType, bool isQueueBlocking):
-    communicationType(communicationType), sharedQueue(true, isQueueBlocking) {
+    explicit ImageFactory(CommunicationType communicationType, bool isQueueBlocking) :
+            communicationType(communicationType), sharedQueue(true, isQueueBlocking) {
     }
 
-    void run() override{
+    void run() override {
         int id = 0;
-        double nowTime, deltaTime, lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        double nowTime, deltaTime, lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count();
         cv::Mat frame;
         cv::VideoCapture videoCapture;
-        while(kill(getppid(), 0) == 0){
+#ifndef DONT_USE_PROCESSES
+        while (kill(getppid(), 0) == 0) {
+#endif
             // Measure time
-            nowTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+            nowTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    std::chrono::system_clock::now().time_since_epoch()).count();
             deltaTime = nowTime - lastTime;
 
             videoCapture.open(CAMERA_DEV_ID, cv::CAP_ANY);
@@ -38,7 +42,7 @@ public:
             data.width = frame.cols;
             data.type = frame.type();
 
-            memcpy(data.image, frame.data, frame.elemSize()*frame.total());
+            memcpy(data.image, frame.data, frame.elemSize() * frame.total());
 
             data.timestamp = std::chrono::system_clock::now();
 
@@ -47,17 +51,19 @@ public:
             } else {
                 sharedMemory.sendData(sendImage, sharedMemory, &data);
             }
+
+            // TODO time stamp save - nie musi byc tutaj
+
             id += 1;
-
             lastTime = nowTime;
+#ifndef DONT_USE_PROCESSES
         }
-
+#endif
     }
 
-    static void sendImage(SharedMemoryVideo &shm, VideoData * data) {
+    static void sendImage(SharedMemoryVideo &shm, VideoData *data) {
         memcpy(shm.data, data, sizeof(VideoData));
     }
 };
-
 
 #endif //QRGAME_IMAGEFACTORY_H

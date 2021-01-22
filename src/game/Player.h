@@ -1,12 +1,10 @@
-
-
 #ifndef QRGAME_PLAYER_H
 #define QRGAME_PLAYER_H
 
+#include "Sprite.h"
 
 #include <string>
 #include <vector>
-#include "Sprite.h"
 
 class Player {
 private:
@@ -14,7 +12,7 @@ private:
     Sprite sprite;
 public:
 
-    Player(int start_x, int start_y) : x(start_x), y(start_y){
+    Player(int start_x, int start_y) : x(start_x), y(start_y) {
 
     }
 
