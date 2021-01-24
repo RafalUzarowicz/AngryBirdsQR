@@ -46,7 +46,7 @@ const char GAME_LOG_MQ[] = "/game_log_mq";
 const char VIDEO_LOG_FILE [] = "./video-log.csv";
 const char GAME_LOG_FILE [] = "./game-log.csv";
 
-const int BUF_NUM = 10;
+const int BUF_NUM = 50;
 
 
 enum CommunicationType {

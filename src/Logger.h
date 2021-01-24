@@ -32,34 +32,11 @@ public:
         logMes =  new struct LogMes[bufNum];
         i = 0;
     }
-   /* void run(int bufNum){
-        bufNum = std::max(1, bufNum);
-        struct LogMes logMes[bufNum];
-        int i= 0;
-        //FIXME finish when a signal is send
-        while(futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout){
-            log_q.receiveMsg(&logMes[i]);
-
-            if(i == bufNum){
-                for (int k=0; k<bufNum;k++){
-                    auto latency = duration_cast<milliseconds>(logMes[k].end - logMes[k].start).count();
-                    output<<logMes[k].id<<","<<latency<<'\n';
-                }
-                i = 0;
-            }
-            ++i;
-        }
-        output.close();
-    }*/
     void runOnce(){
-        //std::cout<<"Logger running\n";
         if(log_q.receiveMsg(&logMes[i]) != -1){
-            //std::cout<<"[L]:"<<logMes->id<<"\n";
             ++i;
         };
-        //std::cout<<"Received Msg\n";
         if(i == bufNum){
-            //std::cout<<"Saving data to file\n";
             for (int k=0; k<bufNum;k++){
                 auto latency = duration_cast<microseconds>(logMes[k].end - logMes[k].start).count();
                 output<<logMes[k].id<<","<<latency<<'\n';
@@ -69,7 +46,6 @@ public:
         }
     }
     void close(){
-        //std::cout<<"Closing stream\n";
         output.close();
     }
 

@@ -226,7 +226,6 @@ void CameraHandler::captureFrame() {
 
 }
 
-// TODO: test after installing OpenCV
 
 
 CameraHandler::~CameraHandler() {

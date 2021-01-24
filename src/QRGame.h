@@ -18,7 +18,7 @@
 #include <sys/mman.h>
 #include <ctime>
 #include <sys/resource.h>
-//todo create and unlink logging queues
+
 class QRGame : public IProcess {
 private:
     enum SchedulerMode : int {

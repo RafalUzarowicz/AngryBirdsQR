@@ -34,7 +34,6 @@ private:
 public:
     explicit Game(CommunicationType communicationType, bool isQueueBlocking = false) : communicationType(
             communicationType), sharedQueue(false, isQueueBlocking) {
-        //todo create logging queue and logger class
         this->game = new Logic();
         this->window = new Window(game);
         if (communicationType == SHARED_MEMORY) {
@@ -71,7 +70,6 @@ public:
         int prev_id = 0;
 #ifndef DONT_USE_PROCESSES // DONT DELETE AND DONT COMMENT THIS ONE
         while (kill(getppid(), 0) == 0) {
-            //todo change it so that killing it also closes logger thread and releases resources
 #endif // DONT DELETE AND DONT COMMENT THIS ONE
             // Measure time
             nowTime = std::chrono::duration_cast<std::chrono::milliseconds>(

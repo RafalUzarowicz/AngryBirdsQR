@@ -60,7 +60,6 @@ public:
         VideoData videoData{};
         GameData gameData{};
 #ifndef DONT_USE_PROCESSES
-        //todo change it so that closing the process also properly closes logging thread
         while (kill(getppid(), 0) == 0 )
         {
 #endif
@@ -87,7 +86,7 @@ public:
                 gameData.percentage = getPercent(&data);
                 gameData.id = data.id;
                 gameData.timestamp = std::chrono::system_clock::now();;
-                std::cout<<"timestamp: "<<std::chrono::system_clock::to_time_t(gameData.timestamp)<<"\n";
+                //std::cout<<"timestamp: "<<std::chrono::system_clock::to_time_t(gameData.timestamp)<<"\n";
 
 
                 if (commsTypeQrToGame == SHARED_MEMORY) {
