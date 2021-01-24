@@ -18,7 +18,7 @@
 #include <sys/mman.h>
 #include <ctime>
 #include <sys/resource.h>
-
+//todo create and unlink logging queues
 class QRGame : public IProcess {
 private:
     enum SchedulerMode : int {
@@ -26,21 +26,13 @@ private:
     };
 
     SchedulerMode schedMode = SchedulerMode::DEFAULT;
-
     CommunicationType imageToQr = SHARED_MEMORY;
-
     CommunicationType qrToGame = SHARED_MEMORY;
-
     bool blockQueueVideoImage = false;
-
     bool blockQueueVideoQr = false;
-
     bool blockQueueGameQr = false;
-
     bool blockQueueGameGame = false;
-
     bool coreLimit = false;
-
     InputManager::Command command;
     InputManager *inputManager;
     Game *game;
@@ -223,6 +215,7 @@ private:
     }
 
     static void setup() {
+
         QRGame::unlink();
         if (sem_open(SEM_VIDEO_PROD, O_CREAT, 0660, 1) == SEM_FAILED) {
             std::cerr << strerror(errno) << "\n";
@@ -281,6 +274,31 @@ private:
             exit(1);
         }
         ftruncate(videoSgmFd, videoDataSize);
+
+#ifdef LOGGING_ENABLED
+        auto logMesSize = sizeof(LogMes) + 2;
+        mq_attr gameLog{};
+        gameLog.mq_maxmsg = 10;
+        gameLog.mq_msgsize = logMesSize;
+        gameLog.mq_curmsgs = 0;
+        errno = 0;
+        if (mq_open(GAME_LOG_MQ, O_CREAT | O_RDWR | O_NONBLOCK, 0660, &gameLog) == (mqd_t) -1) {
+            std::cerr << "Could not create game logging queue: "<<strerror(errno) << "\n";
+            unlink();
+            exit(1);
+        }
+        errno = 0;
+        mq_attr videoLog{};
+        videoLog.mq_maxmsg = 10;
+        videoLog.mq_msgsize = logMesSize;
+        videoLog.mq_curmsgs = 0;
+        if(mq_open(VIDEO_LOG_MQ, O_CREAT|O_RDWR, 0660, &videoLog)== (mqd_t)-1){
+            std::cerr<<"Could not create video logging queue: "<<strerror(errno)<<"\n";
+            unlink();
+            exit(1);
+        }
+#endif //LOGGING_ENABLED
+
     }
 
     static void unlink() {
@@ -292,6 +310,10 @@ private:
         sem_unlink(SEM_GAME_CONS);
         shm_unlink(GAME_MEM_NAME);
         shm_unlink(VIDEO_MEM_NAME);
+#ifdef LOGGING_ENABLED
+        mq_unlink(GAME_LOG_MQ);
+        mq_unlink(VIDEO_LOG_MQ);
+#endif //LOGGING_ENABLED
     }
 
     void killChildren() const {

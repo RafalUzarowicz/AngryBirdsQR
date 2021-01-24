@@ -41,19 +41,18 @@ public:
             data.height = frame.rows;
             data.width = frame.cols;
             data.type = frame.type();
+            data.id = id;
 
             memcpy(data.image, frame.data, frame.elemSize() * frame.total());
 
             data.timestamp = std::chrono::system_clock::now();
+            //std::cout<<"[IMG]"<<id<<"\n";
 
             if (communicationType == QUEUE) {
                 sharedQueue.sendMsg(&data);
             } else {
                 sharedMemory.sendData(sendImage, sharedMemory, &data);
             }
-
-            // TODO time stamp save - nie musi byc tutaj
-
             id += 1;
             lastTime = nowTime;
 #ifndef DONT_USE_PROCESSES

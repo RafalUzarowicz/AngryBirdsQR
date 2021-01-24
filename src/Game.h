@@ -30,6 +30,7 @@ private:
 public:
     explicit Game(CommunicationType communicationType, bool isQueueBlocking = false) : communicationType(
             communicationType), sharedQueue(false, isQueueBlocking) {
+        //todo create logging queue and logger class
         this->game = new Logic();
         this->window = new Window(game);
         if (communicationType == SHARED_MEMORY) {
@@ -45,6 +46,7 @@ public:
     }
 
     void run() override {
+        //todo start logging thread
 #ifdef NCURSES_INCLUDED // DONT DELETE AND DONT COMMENT THIS ONE
         window->initialize();
 #endif // DONT DELETE AND DONT COMMENT THIS ONE
@@ -58,6 +60,7 @@ public:
         GameData data;
 #ifndef DONT_USE_PROCESSES // DONT DELETE AND DONT COMMENT THIS ONE
         while (kill(getppid(), 0) == 0) {
+            //todo change it so that killing it also closes logger thread and releases resources
 #endif // DONT DELETE AND DONT COMMENT THIS ONE
             // Measure time
             nowTime = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -73,6 +76,12 @@ public:
             } else {
                 sharedQueue.receiveMsg(&data);
             }
+#ifdef LOGGING_ENABLED
+            LogMes logMes{};
+            logMes.end =
+
+#endif
+            //todo add timestamp send data to logger
             if (data.id >= 0) {
                 // Process input
                 if (std::abs(movement - data.percentage) > maxStep) {
@@ -85,8 +94,6 @@ public:
                     movement = data.percentage;
                 }
             }
-            // TODO time stamp save - nie musi byc tutaj
-
 
 #ifndef NCURSES_INCLUDED // DONT DELETE AND DONT COMMENT THIS ONE
             std::cout << data.percentage << '\n';
