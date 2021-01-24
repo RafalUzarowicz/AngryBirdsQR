@@ -61,7 +61,7 @@ public:
         if(i == bufNum){
             //std::cout<<"Saving data to file\n";
             for (int k=0; k<bufNum;k++){
-                auto latency = duration_cast<milliseconds>(logMes[k].end - logMes[k].start).count();
+                auto latency = duration_cast<microseconds>(logMes[k].end - logMes[k].start).count();
                 output<<logMes[k].id<<","<<latency<<'\n';
             }
             output<<std::flush;

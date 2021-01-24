@@ -26,6 +26,10 @@ private:
 
     constexpr double static const step = 0.1;
     constexpr double static const maxStep = 0.05;
+#ifdef LOGGING_ENABLED
+    SharedQueueTimestamp* mq_game_log;
+    std::promise<void> exitSignal;
+#endif //LOGGING ENABLED
 
 public:
     explicit Game(CommunicationType communicationType, bool isQueueBlocking = false) : communicationType(
@@ -38,6 +42,9 @@ public:
         } else {
             isBlocking = isQueueBlocking;
         }
+#ifdef LOGGING_ENABLED
+        mq_game_log = new SharedQueueTimestamp(GAME_LOG_MQ, true);
+#endif //LOGGING_ENABLED
     }
 
     ~Game() {
@@ -46,7 +53,10 @@ public:
     }
 
     void run() override {
-        //todo start logging thread
+#ifdef LOGGING_ENABLED
+        std::future<void> futureObj = exitSignal.get_future();
+        std::thread thread (&runLogger, std::move(futureObj));
+#endif //LOGGING_ENABLED
 #ifdef NCURSES_INCLUDED // DONT DELETE AND DONT COMMENT THIS ONE
         window->initialize();
 #endif // DONT DELETE AND DONT COMMENT THIS ONE
@@ -58,6 +68,7 @@ public:
 
         double movement = 0.0;
         GameData data;
+        int prev_id = 0;
 #ifndef DONT_USE_PROCESSES // DONT DELETE AND DONT COMMENT THIS ONE
         while (kill(getppid(), 0) == 0) {
             //todo change it so that killing it also closes logger thread and releases resources
@@ -77,11 +88,17 @@ public:
                 sharedQueue.receiveMsg(&data);
             }
 #ifdef LOGGING_ENABLED
-            LogMes logMes{};
-            logMes.end =
+            if(data.id != prev_id){
+                LogMes logMes{};
+                logMes.end =std::chrono::system_clock::now();
+                logMes.id = data.id;
+                logMes.start = data.timestamp;
+                mq_game_log->sendMsg(&logMes);
+                prev_id = logMes.id;
+            }
+
 
 #endif
-            //todo add timestamp send data to logger
             if (data.id >= 0) {
                 // Process input
                 if (std::abs(movement - data.percentage) > maxStep) {
@@ -115,9 +132,23 @@ public:
 #ifndef DONT_USE_PROCESSES // DONT DELETE AND DONT COMMENT THIS ONE
         }
 #endif // DONT DELETE AND DONT COMMENT THIS ONE
+#ifdef LOGGING_ENABLED
+        std::cout<<"Sending close signal\n";
+        exitSignal.set_value();
+        std::cout<<"Waiting for thread to join\n";
+        thread.join();
+#endif //LOGGING ENABLED
     }
 
 private:
+    static void runLogger(std::future<void> futureObj){
+        Logger logger(GAME_LOG_MQ, GAME);
+        while(futureObj.wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout){
+            logger.runOnce();
+        }
+        std::cout<<"Got close signal\n";
+        logger.close();
+    }
     static void readData(SharedMemoryGame &sharedMemoryGame, GameData *data) {
         memcpy(data, sharedMemoryGame.data, sizeof(GameData));
     }
