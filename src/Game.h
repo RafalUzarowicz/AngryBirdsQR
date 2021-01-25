@@ -25,7 +25,8 @@ private:
     bool isBlocking = true;
 
     constexpr double static const step = 0.1;
-    constexpr double static const maxStep = 0.05;
+    constexpr double static const maxStep = 0.1;
+    constexpr double static const blockingSpeed = 0.5;
 #ifdef LOGGING_ENABLED
     SharedQueueTimestamp* mq_game_log;
     std::promise<void> exitSignal;
@@ -94,8 +95,6 @@ public:
                 mq_game_log->sendMsg(&logMes);
                 prev_id = logMes.id;
             }
-
-
 #endif
             if (data.id >= 0) {
                 // Process input
@@ -116,7 +115,7 @@ public:
 
             // Update game
             if (isBlocking) {
-                game->update(movement, window->getHeight(), window->getWidth(), 0.1);
+                game->update(movement, window->getHeight(), window->getWidth(), blockingSpeed);
             } else {
                 game->update(movement, window->getHeight(), window->getWidth(), deltaTime / 1000.0);
             }

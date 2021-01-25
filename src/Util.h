@@ -48,11 +48,11 @@ const char GAME_LOG_FILE [] = "./game-log.csv";
 
 const int BUF_NUM = 50;
 
-
 enum CommunicationType {
     QUEUE,
     SHARED_MEMORY
 };
+
 enum LogType{
     VIDEO,
     GAME
