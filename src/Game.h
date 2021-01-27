@@ -26,7 +26,7 @@ private:
 
     constexpr double static const step = 0.1;
     constexpr double static const maxStep = 0.1;
-    constexpr double static const blockingSpeed = 0.5;
+    constexpr double static const blockingSpeed = 0.3;
 #ifdef LOGGING_ENABLED
     SharedQueueTimestamp* mq_game_log;
     std::promise<void> exitSignal;
@@ -34,7 +34,7 @@ private:
 
 public:
     explicit Game(CommunicationType communicationType, bool isQueueBlocking = false) : communicationType(
-            communicationType), sharedQueue(false, isQueueBlocking) {
+            communicationType), sharedQueue(false, !isQueueBlocking) {
         this->game = new Logic();
         this->window = new Window(game);
         if (communicationType == SHARED_MEMORY) {
@@ -86,6 +86,7 @@ public:
             } else {
                 sharedQueue.receiveMsg(&data);
             }
+
 #ifdef LOGGING_ENABLED
             if(data.id != prev_id){
                 LogMes logMes{};
@@ -118,6 +119,7 @@ public:
                 game->update(movement, window->getHeight(), window->getWidth(), blockingSpeed);
             } else {
                 game->update(movement, window->getHeight(), window->getWidth(), deltaTime / 1000.0);
+
             }
 #ifdef NCURSES_INCLUDED // DONT DELETE AND DONT COMMENT THIS ONE
             // Clear screen

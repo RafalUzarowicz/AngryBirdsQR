@@ -292,7 +292,7 @@ private:
         videoLog.mq_maxmsg = 10;
         videoLog.mq_msgsize = logMesSize;
         videoLog.mq_curmsgs = 0;
-        if(mq_open(VIDEO_LOG_MQ, O_CREAT|O_RDWR, 0660, &videoLog)== (mqd_t)-1){
+        if(mq_open(VIDEO_LOG_MQ, O_CREAT|O_RDWR | O_NONBLOCK, 0660, &videoLog)== (mqd_t)-1){
             std::cerr<<"Could not create video logging queue: "<<strerror(errno)<<"\n";
             unlink();
             exit(1);

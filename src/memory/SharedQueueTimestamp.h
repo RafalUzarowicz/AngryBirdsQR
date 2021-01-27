@@ -14,7 +14,7 @@
 class SharedQueueTimestamp {
 public:
     SharedQueueTimestamp(const char * name, bool write){
-        auto flags = write?O_WRONLY:O_RDONLY;
+        auto flags = write?O_WRONLY :O_RDONLY;
         queue = mq_open(name, flags);
         if(queue < 0){
             std::cerr << strerror(errno) << "\n";

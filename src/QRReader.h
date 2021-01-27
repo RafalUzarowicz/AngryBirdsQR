@@ -59,28 +59,19 @@ public:
         QRData data{};
         VideoData videoData{};
         GameData gameData{};
+        LogMes logMes{};
+        int prev_id = 0;
 #ifndef DONT_USE_PROCESSES
         while (kill(getppid(), 0) == 0 )
         {
 #endif
-            int prev_id = 0;
             if (commsTypeImageToQr == SHARED_MEMORY) {
                 mem_video.getData(findQrFromMemory, mem_video, &data);
             } else {
                 mq_video.receiveMsg(&videoData);
                 findQrFromQueue(&data, &videoData);
             }
-#ifdef LOGGING_ENABLED
-            if(data.id > 0 && data.id != prev_id){
-                LogMes logMes{};
-                logMes.end = std::chrono::system_clock::now();
-                logMes.id = gameData.id;
-                logMes.start = gameData.timestamp;
-                //std::cout<<"[Q]:"<<logMes.id;
-                mq_video_log->sendMsg(&logMes);
-                prev_id = logMes.id;
-            }
-#endif
+            logMes.end = std::chrono::system_clock::now();
 
             if (data.found && data.id >= 0 && data.id != prev_id) {
                 gameData.percentage = getPercent(&data);
@@ -95,6 +86,16 @@ public:
                     mq_game.sendMsg(&gameData);
                 }
             }
+
+#ifdef LOGGING_ENABLED
+            if(data.id > 0 && data.id != prev_id){
+                logMes.id = data.id;
+                logMes.start = data.timestamp;
+                mq_video_log->sendMsg(&logMes);
+                prev_id = logMes.id;
+            }
+#endif
+
 #ifndef DONT_USE_PROCESSES
         }
 #ifdef LOGGING_ENABLED
@@ -119,7 +120,8 @@ private:
         cv::Mat img(shm.data->height, shm.data->width, shm.data->type, shm.data->image);
 
         qrData->found = false;
-
+        qrData->id = shm.data->id;
+        qrData->timestamp = shm.data->timestamp;
         static QRCodeDetector qrDetector;
         static Mat bbox;
 
@@ -140,13 +142,14 @@ private:
         qrData->id = videoData->id;
 
         qrData->found = false;
+        qrData->timestamp = videoData->timestamp;
+        qrData->id = videoData->id;
 
         static QRCodeDetector qrDetector;
         static Mat bbox;
 
         if (qrDetector.detect(img, bbox)) {
             if (bbox.cols == 4) {
-                qrData->id = videoData->id;
                 qrData->height = videoData->height;
                 qrData->found = true;
                 for (int i = 0; i < 4; i++) {

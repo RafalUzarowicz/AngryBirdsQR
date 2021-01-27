@@ -18,27 +18,30 @@ private:
     struct LogMes * logMes;
     int i;
     int bufNum;
+    int prevId;
 
 public:
     Logger(const char * queueName, LogType type): log_q(queueName, false){
         if (type == VIDEO){
             output.open(VIDEO_LOG_FILE);
-            output<<"id,timestamp\n";
+            output<<"id,latency[ns]\n";
         }else if(type == GAME){
             output.open(GAME_LOG_FILE);
-            output<<"id,timestamp\n";
+            output<<"id,latency[ns]\n";
         }
         bufNum = std::max(1, BUF_NUM);
         logMes =  new struct LogMes[bufNum];
         i = 0;
+        prevId = 0;
     }
     void runOnce(){
-        if(log_q.receiveMsg(&logMes[i]) != -1){
+        if(log_q.receiveMsg(&logMes[i]) != -1 && logMes[i].id != prevId){
+            prevId = logMes[i].id;
             ++i;
         };
         if(i == bufNum){
             for (int k=0; k<bufNum;k++){
-                auto latency = duration_cast<microseconds>(logMes[k].end - logMes[k].start).count();
+                auto latency = duration_cast<nanoseconds>(logMes[k].end - logMes[k].start).count();
                 output<<logMes[k].id<<","<<latency<<'\n';
             }
             output<<std::flush;
