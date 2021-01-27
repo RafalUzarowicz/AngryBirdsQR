@@ -69,6 +69,7 @@ public:
         double movement = 0.0;
         GameData data;
         int prev_id = 0;
+        LogMes logMes{};
 #ifndef DONT_USE_PROCESSES // DONT DELETE AND DONT COMMENT THIS ONE
         while (kill(getppid(), 0) == 0) {
 #endif // DONT DELETE AND DONT COMMENT THIS ONE
@@ -86,11 +87,10 @@ public:
             } else {
                 sharedQueue.receiveMsg(&data);
             }
+            logMes.end =std::chrono::system_clock::now();
 
 #ifdef LOGGING_ENABLED
-            if(data.id != prev_id){
-                LogMes logMes{};
-                logMes.end =std::chrono::system_clock::now();
+            if(data.id != prev_id && data.id >0){
                 logMes.id = data.id;
                 logMes.start = data.timestamp;
                 mq_game_log->sendMsg(&logMes);

@@ -32,7 +32,6 @@ private:
     bool blockQueueVideoQr = false;
     bool blockQueueGameQr = false;
     bool blockQueueGameGame = false;
-    bool coreLimit = false;
     InputManager::Command command;
     InputManager *inputManager;
     Game *game;
@@ -66,9 +65,6 @@ public:
 
 #ifdef SCHED_MENU_ENABLED // DONT DELETE AND DONT COMMENT THIS ONE
         this->schedMenu();
-#endif // DONT DELETE AND DONT COMMENT THIS ONE
-#ifdef CORE_MENU_ENABLED // DONT DELETE AND DONT COMMENT THIS ONE
-        this->coresMenu();
 #endif // DONT DELETE AND DONT COMMENT THIS ONE
 #ifdef IMAGE_QR_MENU_ENABLED // DONT DELETE AND DONT COMMENT THIS ONE
         this->imagesToQrMenu();
@@ -174,43 +170,6 @@ private:
             std::cout << strerror(errno) << '\n';
             this->end();
             exit(1);
-        }
-
-
-        if (coreLimit) {
-            // FIXME to nie dziala
-            result = 0;
-            cpu_set_t set;
-
-            CPU_ZERO(&set);
-            CPU_SET(affinity, &set);
-
-            result = sched_setaffinity(game_proc, sizeof(set), &set);
-            if (result < 0) {
-                std::cout << strerror(errno) << '\n';
-                this->end();
-                exit(1);
-            }
-
-            CPU_ZERO(&set);
-            CPU_SET(affinity, &set);
-
-            result = sched_setaffinity(image_proc, sizeof(set), &set);
-            if (result < 0) {
-                std::cout << strerror(errno) << '\n';
-                this->end();
-                exit(1);
-            }
-
-            CPU_ZERO(&set);
-            CPU_SET(affinity, &set);
-
-            result = sched_setaffinity(qr_proc, sizeof(set), &set);
-            if (result < 0) {
-                std::cout << strerror(errno) << '\n';
-                this->end();
-                exit(1);
-            }
         }
     }
 
@@ -359,46 +318,6 @@ private:
                     break;
             }
         } while (c != 'q');
-        exit(0);
-    }
-
-    void coresMenu() {
-        // FIXME to jest zdobywanie affinity ale nic nie daje :( albo nie wiem ze daje
-//        cpu_set_t mask;
-//        if (sched_getaffinity(0, sizeof(cpu_set_t), &mask) == -1) {
-//            std::cerr<<strerror(errno)<<'\n';
-//            exit(1);
-//        }
-//        long nproc = sysconf(_SC_NPROCESSORS_ONLN);
-//        int affinities[nproc];
-//        for (int i = 0; i < nproc; i++) {
-//            affinities[i] = CPU_ISSET(i, &mask);
-//        }
-
-        char c;
-        do {
-            std::cout << "q - Quit\n";
-            std::cout << "1. No core limit\n";
-            std::cout << "2. Core limit - 2\n";
-            std::cout << "Select core limit: ";
-
-            std::cin >> c;
-            affinity = 1;
-
-            switch (c) {
-                case '1':
-                    coreLimit = false;
-                    return;
-                case '2':
-                    // FIXME zmienic na true i ogarnac te cpu
-                    coreLimit = false;
-                    return;
-                default:
-                    break;
-            }
-
-        } while (c != 'q');
-
         exit(0);
     }
 
